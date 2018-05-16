@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import os
-import sys
 
 os.environ['SPHINX_BUILD'] = '1'
 import cocotb
 
-if __name__ == "__main__":
+def main():
     print(os.path.dirname(os.path.dirname(cocotb.__file__)))
+
+if __name__ == "__main__":
+    main()
