@@ -2,9 +2,14 @@
 sudo: required
 language: cpp
 
+os:
+  - linux
+  - windows
+  
 services:
   - docker
 
 script:
+  - set
   - docker build .
 
