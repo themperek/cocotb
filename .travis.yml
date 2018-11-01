@@ -14,6 +14,8 @@ script:
   #- gcc -v
   - PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
   - dir
-  - cmd /K iverilog-10.1.1-x64_setup.exe /SILENT
+  - REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\ /v EnableLUA
+  - cmd /C reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
+  - cmd /C iverilog-10.1.1-x64_setup.exe /SILENT
   - dir c:
 
