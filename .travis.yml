@@ -11,5 +11,5 @@ services:
 
 script:
   - set
-  - docker build Dockerfile.windows
+  - docker build -f Dockerfile.windows .
 
