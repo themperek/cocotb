@@ -11,5 +11,6 @@ services:
 
 script:
   - set
-  - docker build -f Dockerfile.windows .
+  - gcc -v
+  - pacman -Q
 
