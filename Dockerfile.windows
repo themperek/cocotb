@@ -1,4 +1,4 @@
-FROM mback2k/windows-buildbot-mingw-w64
+FROM mback2k/windows-buildbot-mingw-w64:latest_ltsc2016
 
 # make sources available in docker image
 RUN dir
