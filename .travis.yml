@@ -3,7 +3,7 @@ sudo: required
 language: cpp
 
 os:
-  - linux
+#  - linux
   - windows
   
 services:
@@ -11,5 +11,5 @@ services:
 
 script:
   - set
-  - docker build .
+  - docker build Dockerfile.windows
 
