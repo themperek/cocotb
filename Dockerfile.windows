@@ -1,0 +1,5 @@
+FROM mback2k/docker-windows-buildbot-mingw-w64
+
+# make sources available in docker image
+RUN dir
+RUN gcc -v
