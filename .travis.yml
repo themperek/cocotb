@@ -12,5 +12,5 @@ services:
 script:
   - set
   - gcc -v
-  - pacman -Q
+  - Get-Alias
 
