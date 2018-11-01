@@ -12,5 +12,5 @@ services:
 script:
   - set
   - gcc -v
-  - Get-Alias
+  - PowerShell -Command Get-Alias
 
