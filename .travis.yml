@@ -24,8 +24,8 @@ script:
   - PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
   - ls /c
   - ls /c/iverilog
-  - setx path '%path%;C:/iverilog/bin'
-  - set
+  - setx path '%path%;C:\\iverilog\\bin'
+  - c:\iverilog\bin\iverillog.exe
   - iverilog
   - make
 
