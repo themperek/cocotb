@@ -25,7 +25,7 @@ script:
   - ls /c
   - ls /c/iverilog
   - setx path '%path%;C:\\iverilog\\bin'
-  - c:\iverilog\bin\iverillog.exe
+  #- c:\iverilog\bin\iverillog.exe
   - iverilog
-  - make
+  #- make
 
