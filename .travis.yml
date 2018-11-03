@@ -25,12 +25,13 @@ script:
   - ls /c
   - ls /c/iverilog
   - ls /c/iverilog/bin
-  - export PATH=/c/iverilog/bin
+  - export PATH=/c/iverilog/bin:$PATH
   #- cmd /K set path %path%
   #- setx path '%path%;C:\\iverilog\\bin'
   #- c:\iverilog\bin\iverillog.exe
-  - iverilog
+  - iverilog -h
   #- make
   - exit
   - set
+  - dir
 
