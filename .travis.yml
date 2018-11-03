@@ -29,7 +29,7 @@ script:
   #- cmd /K set path %path%
   #- setx path '%path%;C:\\iverilog\\bin'
   #- c:\iverilog\bin\iverillog.exe
-  - iverilog -h
+  #- iverilog -h
   #- make
   - exit
   - set
