@@ -23,5 +23,6 @@ script:
   #- cmd /C reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
   - PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
   - ls /c
-  - 
+  - ls /c/iverilog
+  - iverilog
 
