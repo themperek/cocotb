@@ -11,10 +11,11 @@ services:
 
 script:
   - docker build -f Dockerfile.windows .
-  #- set
+  - PowerShell -Command "set"
+  - PowerShell -Command "dir"
   #- gcc -v
   #- PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
-  #- dir
+  - dir
   #- PowerShell -Command Get-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
   #- PowerShell -Command Set-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0
   #- PowerShell -Command Get-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
