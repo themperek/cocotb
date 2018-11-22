@@ -1,5 +1,6 @@
-FROM mback2k/windows-buildbot-mingw-w64:latest_ltsc2016
+FROM mcr.microsoft.com/windows/nanoserver
 
 # make sources available in docker image
 RUN dir
-RUN gcc -v
+RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
+RUN PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
