@@ -1,7 +1,8 @@
 FROM mcr.microsoft.com/windowsservercore:1803
 
 ADD . src
-WORKDIR C:\src
+RUN dir
+WORKDIR "C:\src"
 RUN dir
 
 #RUN dir C:\src
@@ -9,8 +10,10 @@ RUN dir
 #RUN dir C:\Users\ContainerAdministrator
 #RUN set
 
-#RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
-#RUN PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
+RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
+RUN PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
+RUN set PATH=%PATH%;C:\iverilog\bin\
+RUN iverilog
 
 #RUN PowerShell -Command "Invoke-WebRequest -outfile 7zsetup.exe http://www.7-zip.org/a/7z1604-x64.exe"
 #RUN PowerShell -Command "Invoke-WebRequest -outfile msys2-x86_64-latest.tar.xz http://repo.msys2.org/distrib/msys2-x86_64-latest.tar.xz"
