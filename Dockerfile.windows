@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/windowsservercore:1803
 
+ADD . src
 RUN dir
+RUN dir C:\src
 RUN dir C:\Users
 RUN dir C:\Users\ContainerAdministrator
 RUN set
