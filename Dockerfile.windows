@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/windowsservercore:1803
 
 RUN dir
-RUN dir c:\Users
-
+RUN dir C:\Users
+RUN dir C:\Users\ContainerAdministrator
 RUN set
 
 #RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
