@@ -10,10 +10,11 @@ services:
   - docker
 
 script:
+  - docker build -f Dockerfile.windows .
   #- set
   #- gcc -v
-  - PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
-  - dir
+  #- PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
+  #- dir
   #- PowerShell -Command Get-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
   #- PowerShell -Command Set-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0
   #- PowerShell -Command Get-ItemProperty -Path registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
@@ -21,17 +22,17 @@ script:
   
   #- REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\ /v EnableLUA
   #- cmd /C reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\system /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
-  - PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
-  - ls /c
-  - ls /c/iverilog
-  - ls /c/iverilog/bin
-  - export PATH=/c/iverilog/bin:$PATH
+  #- PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
+  #- ls /c
+  #- ls /c/iverilog
+  #- ls /c/iverilog/bin
+  #- export PATH=/c/iverilog/bin:$PATH
   #- cmd /K set path %path%
   #- setx path '%path%;C:\\iverilog\\bin'
   #- c:\iverilog\bin\iverillog.exe
   #- iverilog -h
   #- make
-  - exit
-  - set
-  - dir
+  #- exit
+  #- set
+  #- dir
 
