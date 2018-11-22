@@ -12,12 +12,13 @@ RUN dir
 
 RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
 RUN PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
-RUN set PATH=%PATH%;C:\iverilog\bin\
+RUN set PATH=%PATH%;C:\iverilog\bin
 RUN iverilog
 
 #RUN PowerShell -Command "Invoke-WebRequest -outfile 7zsetup.exe http://www.7-zip.org/a/7z1604-x64.exe"
-#RUN PowerShell -Command "Invoke-WebRequest -outfile msys2-x86_64-latest.tar.xz http://repo.msys2.org/distrib/msys2-x86_64-latest.tar.xz"
 #RUN PowerShell -Command "Start-Process .\7zsetup -ArgumentList '/S /D=c:/7zip' -Wait"
+
+#RUN PowerShell -Command "Invoke-WebRequest -outfile msys2-x86_64-latest.tar.xz http://repo.msys2.org/distrib/msys2-x86_64-latest.tar.xz"
 #RUN PowerShell -Command "C:\7zip\7z e msys2-x86_64-latest.tar.xz -Wait"
 #RUN PowerShell -Command "C:\7zip\7z x msys2-x86_64-latest.tar -oC:\\" 
 #RUN PowerShell -Command "C:\msys64\usr\bin\bash -lc 'pacman --noconfirm -S  base-devel mingw-w64-x86_64-toolchain'"
