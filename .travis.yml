@@ -11,8 +11,8 @@ services:
 
 script:
   - docker build -f Dockerfile.windows .
-  - PowerShell -Command "set"
-  - PowerShell -Command "dir"
+  #- PowerShell -Command "set"
+  #- PowerShell -Command "dir"
   #- gcc -v
   #- PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
   - dir
