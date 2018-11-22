@@ -1,6 +1,5 @@
-FROM mcr.microsoft.com/windows/nanoserver:1803
+FROM mcr.microsoft.com/windows/windowsservercore:1803
 
-# make sources available in docker image
 RUN dir
 RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
 RUN PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait"
