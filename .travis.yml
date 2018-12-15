@@ -44,6 +44,7 @@ jobs:
       python: 2.7
       before_install:
         - brew install icarus-verilog
-        - brew install pyenv-virtualenv
+        #- brew install pyenv-virtualenv
+        - pip install tox
       script:
         - tox -e py27
