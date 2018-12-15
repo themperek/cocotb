@@ -1,6 +1,5 @@
 # See Dockerfile for the full build instructions
 sudo: required
-language: python
 cache: pip
 
 git:
@@ -13,11 +12,13 @@ jobs:
   include:
     - stage: PythonLint
       os: linux
+      language: python
       python: 3.5
       install: pip install flake8
       script: flake8 --exit-zero cocotb/
     - stage: SimTests
       os: linux
+      language: python
       python: 2.7
       before_install: &docker_prep
         - docker build -t cocotb .
@@ -30,6 +31,7 @@ jobs:
         - echo -e 'travis_fold:end:cocotb_py27'
     - stage: SimTests
       os: linux
+      language: python
       python: 3.5
       before_install: *docker_prep 
       script:
@@ -38,8 +40,10 @@ jobs:
         - echo 'travis_fold:end:cocotb_py35'
     - stage: SimTests
       os: osx
+      language: generic
       python: 2.7
       before_install:
         - brew install icarus-verilog
+        - brew install pyenv-virtualenv
       script:
         - tox -e py27
