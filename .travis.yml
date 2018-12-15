@@ -12,10 +12,12 @@ services:
 jobs:
   include:
     - stage: PythonLint
+      os: linux
       python: 3.5
       install: pip install flake8
       script: flake8 --exit-zero cocotb/
     - stage: SimTests
+      os: linux
       python: 2.7
       before_install: &docker_prep
         - docker build -t cocotb .
@@ -27,10 +29,17 @@ jobs:
         - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py27'
         - echo -e 'travis_fold:end:cocotb_py27'
     - stage: SimTests
+      os: linux
       python: 3.5
       before_install: *docker_prep 
       script:
         - echo 'Running cocotb tests with Python 3.5 ...' && echo -en 'travis_fold:start:cocotb_py35'
         - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py35'
         - echo 'travis_fold:end:cocotb_py35'
-
+     - stage: SimTests
+       os: osx
+       python: 2.7
+       before_install:
+        - brew install icarus-verilog
+       script:
+        - tox -e py27
