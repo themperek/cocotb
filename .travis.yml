@@ -26,7 +26,7 @@ jobs:
         - docker ps -a
       script:
         - echo 'Running cocotb tests with Python 2.7 ...' && echo 'travis_fold:start:cocotb_py27' 
-        - docker exec -it -e TRAVIS=true cocotb bash -lc 'tox -e py27'
+        - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; tox -e py27'
         - echo -e 'travis_fold:end:cocotb_py27'
     - stage: SimTests
       # env only here for easier visibility in travis-ci
@@ -35,6 +35,6 @@ jobs:
       before_install: *docker_prep 
       script:
         - echo 'Running cocotb tests with Python 3.5 ...' && echo -en 'travis_fold:start:cocotb_py35'
-        - docker exec -it -e TRAVIS=true cocotb bash -lc 'tox -e py35'
+        - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; tox -e py35'
         - echo 'travis_fold:end:cocotb_py35'
 
