@@ -44,7 +44,7 @@ jobs:
       python: 2.7
       before_install:
         - brew install icarus-verilog
-        - brew install python2.7
+        - brew install python2
         - pip install tox
       script:
         - python -V
@@ -55,7 +55,7 @@ jobs:
       python: 3.5
       before_install:
         - brew install icarus-verilog
-        - brew install python3.5
+        - brew install python3
         - pip install tox
       script:
         - python -V
