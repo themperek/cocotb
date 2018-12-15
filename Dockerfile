@@ -17,6 +17,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
        bison \
        python2.7-dev python3-dev\
        python-pip \
+       python-setuptools \
        python3 \
        virtualenv \
        python3-venv \
