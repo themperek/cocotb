@@ -17,7 +17,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
        bison \
        python2.7-dev python3-dev\
        python-pip \
-       python-setuptools \
        python3 \
        virtualenv \
        python3-venv \
@@ -38,6 +37,3 @@ RUN git clone https://github.com/steveicarus/iverilog.git --depth=1 --branch v${
 
 # make sources available in docker image - one copy per python version
 COPY . /src
-
-RUN cd /src
-
