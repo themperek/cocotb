@@ -5,9 +5,6 @@ cache: pip
 git:
   quiet: true
 
-services:
-  - docker
-
 jobs:
   include:
     - stage: PythonLint
@@ -21,24 +18,19 @@ jobs:
       os: linux
       language: python
       python: 2.7
-      before_install: &docker_prep
-        - docker build -t cocotb .
-        - docker images -a
-        - docker run -d --name cocotb cocotb tail -f /dev/null
-        - docker ps -a
+      before_install: &linux_prep
+        - git clone https://github.com/steveicarus/iverilog.git --depth=1 --branch v10_2
+        - cd iverilog && autoconf && ./configure && make -j2 && sudo make install && cd ..
       script:
-        - echo 'Running cocotb tests with Python 2.7 ...' && echo 'travis_fold:start:cocotb_py27' 
-        - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py27'
-        - echo -e 'travis_fold:end:cocotb_py27'
+        - tox -e py27
+
     - stage: SimTests
       os: linux
       language: python
       python: 3.5
-      before_install: *docker_prep 
+      before_install: *linux_prep 
       script:
-        - echo 'Running cocotb tests with Python 3.5 ...' && echo -en 'travis_fold:start:cocotb_py35'
-        - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py35'
-        - echo 'travis_fold:end:cocotb_py35'
+        - tox -e py35
         
     - stage: SimTests
       os: osx
@@ -49,6 +41,7 @@ jobs:
         - pip install tox
       script:
         - tox -e py27
+
     - stage: SimTests
       os: osx
       language: generic
