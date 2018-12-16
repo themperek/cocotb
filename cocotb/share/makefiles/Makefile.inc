@@ -30,7 +30,16 @@
 # Common makefile included by everything
 
 ifeq ($(SIM_ROOT),)
-export SIM_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+    MAKEFILE_DIR:=$(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+    MAKEFILE_PARENT_DIR:=$(shell basename $(MAKEFILE_DIR))
+    
+    #Old way of using COCOTB
+    ifneq ($(MAKEFILE_PARENT_DIR), share)
+        export SIM_ROOT:=$(MAKEFILE_DIR)/cocotb/share
+        $(warning 'Obsolete COOTOB file structure please use "include $$(shell cocotb-config --share)/makefiles/Makefile.inc" in Makefiles')
+    else
+        export SIM_ROOT:=$(MAKEFILE_DIR)
+    endif
 endif
 
 ifeq ($(USER_DIR),)
