@@ -46,9 +46,9 @@ jobs:
         - sudo apt-get install gperf
         - git clone https://github.com/steveicarus/iverilog.git --depth=1 --branch v10_2
         - cd iverilog && autoconf && ./configure && make -j2 && sudo make install && cd ..
-        - pyenv global system $TRAVIS_PYTHON_VERSION
         - pip install tox
       script:
+        - pyenv global system $TRAVIS_PYTHON_VERSION
         - echo 'Running cocotb tests with Python $TRAVIS_PYTHON_VERSION ...' && echo -en 'travis_fold:start:cocotb_py37'
         - tox -e py37
         - echo 'travis_fold:end:cocotb_py37'
