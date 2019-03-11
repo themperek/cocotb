@@ -49,7 +49,7 @@ jobs:
         - pip install tox
       script:
         - echo 'Running cocotb tests with Python 3.7 ...' && echo -en 'travis_fold:start:cocotb_py37'
-        - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py37'
+        - tox -e py37
         - echo 'travis_fold:end:cocotb_py37'
         
     - stage: SimTests
