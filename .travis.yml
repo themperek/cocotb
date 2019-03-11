@@ -49,7 +49,7 @@ jobs:
         - pip install tox
         - pyenv global system $TRAVIS_PYTHON_VERSION
       script:
-        - echo 'Running cocotb tests with Python $TRAVIS_PYTHON_VERSION ...' && echo -en 'travis_fold:start:cocotb_py37'
+        - echo 'Running cocotb tests with Python 3.7 ...' && echo -en 'travis_fold:start:cocotb_py37'
         - tox -e py37
         - echo 'travis_fold:end:cocotb_py37'
         
@@ -57,7 +57,7 @@ jobs:
       python: 3.6.7
       before_install: *travis_linx_prep
       script:
-        - echo 'Running cocotb tests with Python $TRAVIS_PYTHON_VERSION ...' && echo -en 'travis_fold:start:cocotb_py36'
+        - echo 'Running cocotb tests with Python 3.6.7 ...' && echo -en 'travis_fold:start:cocotb_py36'
         - tox -e py36
         - echo 'travis_fold:end:cocotb_py36'
         
