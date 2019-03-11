@@ -54,9 +54,10 @@ jobs:
         - echo 'travis_fold:end:cocotb_py37'
         
     - stage: SimTests
-      python: 3.6
+      python: 3.6.7
       before_install: *travis_linx_prep
       script:
+        - pyenv global system $TRAVIS_PYTHON_VERSION
         - echo 'Running cocotb tests with Python $TRAVIS_PYTHON_VERSION ...' && echo -en 'travis_fold:start:cocotb_py36'
         - tox -e py36
         - echo 'travis_fold:end:cocotb_py36'
