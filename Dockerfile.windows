@@ -7,7 +7,7 @@ RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog
 RUN .\iverilog-10.1.1-x64_setup /VERYSILENT
 RUN setx path "%path%;C:\iverilog\bin"
 
-RUN PowerShell -Command "Invoke-WebRequest -outfile miniconda3.exe Miniconda3-latest-Windows-x86_64.exe"
+RUN PowerShell -Command "Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
 RUN miniconda3.exe /S /D=C:\miniconda3
 
 RUN conda install -c msys2 m2-base m2-make m2w64-toolchain
