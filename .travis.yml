@@ -80,7 +80,7 @@ jobs:
         - tox -e py36
 
     - stage: SimTests
-      os: osx
+      os: linux
       language: generic
       python: 2.7
       env: SIM=ghdl
