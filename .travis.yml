@@ -25,12 +25,9 @@ jobs:
         
     - stage: SimTests
       python: 3.7
-      env: SIM=ghdl
+      os: windows
+      language: generic
       before_install:
-        - sudo apt-get install gnat
-        - git clone https://github.com/ghdl/ghdl.git --depth=1 --branch v0.36
-        - cd ghdl && ./configure && make -j2 && sudo make install && cd ..
-        - pip install tox
-        - pyenv global system $TRAVIS_PYTHON_VERSION
+        - docker build -f Dockerfile.windows .
       script:
-        - tox -e py37
+        - docker exec -it -e TRAVIS=true cocotb pip install tox; cd /src; tox -e py37
