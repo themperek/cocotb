@@ -21,7 +21,7 @@ jobs:
         - sudo apt-get install gnat
         - git clone https://github.com/ghdl/ghdl.git --depth=1 --branch v0.36
         - cd ghdl && ./configure && make -j2 && sudo make install && cd ..
-        - pip install tox
+        - sudo pip install tox
         - pyenv global system $TRAVIS_PYTHON_VERSION
       script:
         - tox -e py37
