@@ -26,7 +26,7 @@ jobs:
     - stage: SimTests
       python: 3.7
       os: windows
-      language: generic
+      language: shell
       before_install:
         - docker build -f Dockerfile.windows .
       script:
