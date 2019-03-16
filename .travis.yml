@@ -32,5 +32,6 @@ jobs:
         - cd ghdl && ./configure && make -j2 && sudo make install && cd ..
         - pip install tox
         - pyenv global system $TRAVIS_PYTHON_VERSION
+        - export SIM=ghdl
       script:
         - tox -e py37
