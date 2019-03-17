@@ -6,7 +6,7 @@ cache:
   directories:
   - iverilog
   - ghdl
-  
+
 git:
   quiet: true
 
