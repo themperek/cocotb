@@ -27,7 +27,7 @@ jobs:
       os: windows
       language: shell
       before_install:
-        - RUN PowerShell "& "".\install.ps1"""
+        - PowerShell "& "".\install.ps1"""
 
       script:
         - tox -e py37
