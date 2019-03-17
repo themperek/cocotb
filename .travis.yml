@@ -82,8 +82,7 @@ jobs:
       script:
         - tox -e py36
         
-  allow_failures:
-    - stage: SimTests
+   - stage: SimTests
       python: 3.7
       env: SIM=ghdl
       before_install:
@@ -94,3 +93,8 @@ jobs:
         - pyenv global system $TRAVIS_PYTHON_VERSION
       script:
         - tox -e py37
+        
+  allow_failures:
+    - stage: SimTests
+      python: 3.7
+      env: SIM=ghdl
