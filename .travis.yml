@@ -27,17 +27,7 @@ jobs:
       os: windows
       language: shell
       before_install:
-        - PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
-        - PowerShell -Command "Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList /VERYSILENT -Wait"
-        - setx path "%path%;C:\iverilog\bin"
-        - iverilog
-        
-        - PowerShell -Command "Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-        - miniconda3.exe /S /D=C:\miniconda3
-        - setx path "C:\miniconda3;C:\miniconda3\bin;C:\miniconda3\Scripts;%path%"
-        - conda install --yes -c msys2 m2-base m2-make m2w64-toolchain
-        - conda install --yes libpython
-        - pip install coverage xunitparser
+        - RUN PowerShell "& "".\install.ps1"""
 
       script:
         - tox -e py37
