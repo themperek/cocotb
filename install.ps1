@@ -23,3 +23,5 @@ $newPath=$condaPath+$oldPath
 Set-ItemProperty -Path $regPath -Name PATH -Value $newPath
 
 pip install tox
+
+tox -e py37
