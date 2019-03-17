@@ -81,7 +81,8 @@ jobs:
       before_install: *osx_prep
       script:
         - tox -e py36
-
+        
+  allow_failures:
     - stage: SimTests
       python: 3.7
       env: SIM=ghdl
