@@ -32,6 +32,6 @@ jobs:
         - PowerShell Write-Output $env:Path
         
       script:
-        - PowerShell echo $env:Path
-        - PowerShell tox -e py37
+        - PowerShell -Command "echo $env:Path"
+        - PowerShell -Command "tox -e py37"
         
