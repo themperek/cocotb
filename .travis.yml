@@ -31,5 +31,5 @@ jobs:
         - PowerShell "& "".\install.ps1"""
 
       script:
-        - tox -e py37
+        - PowerShell tox -e py37
         
