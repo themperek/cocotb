@@ -17,6 +17,6 @@ conda install --yes libpython
 
 pip install tox
 
-[Environment]::SetEnvironmentVariable("Path", $env:Path, [EnvironmentVariableTartget::Machine)
+[Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
 tox -e py37
