@@ -19,4 +19,6 @@ pip install tox
 
 [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
+echo $env:Path
+
 tox -e py37
