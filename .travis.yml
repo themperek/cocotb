@@ -27,6 +27,7 @@ jobs:
       os: windows
       language: shell
       before_install:
+        - PowerShell Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         - PowerShell "& "".\install.ps1"""
 
       script:
