@@ -1,4 +1,4 @@
-
+#
 sudo: required
 language: python
 dist: xenial
@@ -20,7 +20,7 @@ jobs:
       python: 3.5
       install: pip install flake8
       script: flake8 --exit-zero cocotb/
-      
+
     - stage: SimTests
       os: linux
       python: 2.7
@@ -33,7 +33,7 @@ jobs:
         - echo 'Running cocotb tests with Python 2.7 ...' && echo 'travis_fold:start:cocotb_py27' 
         - docker exec -it -e TRAVIS=true cocotb bash -lc 'pip install tox; cd /src; tox -e py27'
         - echo -e 'travis_fold:end:cocotb_py27'
-        
+
     - stage: SimTests
       os: linux
       python: 3.5
@@ -55,7 +55,7 @@ jobs:
         - echo 'Running cocotb tests with Python 3.7 ...' && echo -en 'travis_fold:start:cocotb_py37'
         - tox -e py37
         - echo 'travis_fold:end:cocotb_py37'
-        
+
     - stage: SimTests
       python: 3.6.7
       before_install: *travis_linx_prep
@@ -63,7 +63,7 @@ jobs:
         - echo 'Running cocotb tests with Python 3.6.7 ...' && echo -en 'travis_fold:start:cocotb_py36'
         - tox -e py36
         - echo 'travis_fold:end:cocotb_py36'
-        
+
     - stage: SimTests
       os: osx
       language: generic
@@ -82,7 +82,7 @@ jobs:
       script:
         - tox -e py36
         
-   - stage: SimTests
+    - stage: SimTests
       python: 3.7
       env: SIM=ghdl
       before_install:
