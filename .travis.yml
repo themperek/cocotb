@@ -28,5 +28,8 @@ jobs:
       language: shell
       before_install:
         - docker build -t cocotb -f Dockerfile.windows .
+        - docker images -a
+        - docker run -t -d --name cocotb cocotb
+        - docker ps -a
       script:
         - docker exec -it -e cocotb python setup.py install; make test 
