@@ -20,6 +20,7 @@ RUN PowerShell conda install --yes -c msys2 m2-base m2-make m2w64-toolchain
 RUN PowerShell conda install --yes libpython
 
 RUN PowerShell pip install tox
+RUN PowerShell "[System.Environment]::SetEnvironmentVariable('SIM', 'icarus', 'Machine')"
 
 RUN PowerShell tox -e py37
 
