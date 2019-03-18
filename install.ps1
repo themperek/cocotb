@@ -20,6 +20,8 @@ pip install tox
 [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable("Path", $env:Path, "Machine")
 
+$env:SIM = questa
+
 echo $env:Path
 
 tox -e py37
