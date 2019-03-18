@@ -27,7 +27,7 @@ jobs:
       os: windows
       language: shell
       before_install:
-        - docker build -f Dockerfile.windows
+        - docker build -f Dockerfile.windows .
         
       script:
         - PowerShell -Command "echo '$env:Path'"
