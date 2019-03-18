@@ -20,7 +20,7 @@ pip install tox
 [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Machine)
 [System.Environment]::SetEnvironmentVariable("Path", $env:Path, "Machine")
 
-$env:SIM = questa
+$env:SIM = 'icarus'
 
 echo $env:Path
 
