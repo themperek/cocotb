@@ -29,7 +29,8 @@ jobs:
       before_install:
         - PowerShell Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         - PowerShell "& "".\install.ps1"""
-        - setx PATH "%PATH%;C:\iverilog\bin"
+        - setx  /M PATH "%PATH%;C:\iverilog\bin"
+        - echo %PATH%
         - PowerShell Write-Output '$env:Path'
         
       script:
