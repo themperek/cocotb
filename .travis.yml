@@ -32,4 +32,4 @@ jobs:
         - docker run -t -d --name cocotb cocotb
         - docker ps -a
       script:
-        - docker exec -it -e cocotb python setup.py install; make test 
+        - docker exec -it cocotb python setup.py install; make test 
