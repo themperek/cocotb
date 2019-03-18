@@ -27,13 +27,7 @@ jobs:
       os: windows
       language: shell
       before_install:
-        - PowerShell Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-        - PowerShell "& "".\install.ps1"""
-        - setx PATH "%PATH%;C:\iverilog\bin" /M 
-        - echo %PATH%
-        - PowerShell Write-Output '$env:Path'
+        - docker build -f Dockerfile.windows
         
       script:
         - PowerShell -Command "echo '$env:Path'"
-        - PowerShell -Command "tox -e py37"
-        
