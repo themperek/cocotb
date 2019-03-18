@@ -22,8 +22,5 @@ RUN PowerShell conda install --yes libpython
 RUN PowerShell pip install tox
 RUN PowerShell "[System.Environment]::SetEnvironmentVariable('SIM', 'icarus', 'Machine')"
 
-RUN PowerShell python setup.py install
-RUN PowerShell make
-
-RUN PowerShell tox -e py37
-
+#RUN PowerShell python setup.py install
+#RUN PowerShell make
