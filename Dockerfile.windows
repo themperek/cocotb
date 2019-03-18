@@ -1,20 +1,25 @@
 FROM mcr.microsoft.com/windowsservercore:1803
 
-ADD . src
-WORKDIR "C:\src"
+COPY . /src
+#ADD . src
+WORKDIR "c:\src"
+#RUN dir 
 
-RUN PowerShell -Command Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
-RUN .\iverilog-10.1.1-x64_setup /VERYSILENT
-RUN setx path "%path%;C:\iverilog\bin"
+RUN PowerShell Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
+RUN PowerShell Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait
+RUN PowerShell "[System.Environment]::SetEnvironmentVariable('Path', $env:Path+'C:\iverilog\bin', 'Machine')"
 
-RUN PowerShell -Command "Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-RUN miniconda3.exe /S /D=C:\miniconda3
+RUN PowerShell Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe
+RUN PowerShell Start-Process .\miniconda3.exe -ArgumentList '/S /D=C:\miniconda3' -Wait
+RUN PowerShell "[System.Environment]::SetEnvironmentVariable('Path', 'C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin;'+$env:Path, 'Machine')"
 
-RUN setx path "C:\miniconda3;C:\miniconda3\bin;C:\miniconda3\Scripts;%path%"
+#RUN PowerShell $env:Path = $env:condaPath + $env:Path
+#RUN PowerShell conda config --set ssl_verify no
 
-RUN conda config --set ssl_verify off
-RUN conda install --yes -c msys2 m2-base m2-make m2w64-toolchain
-RUN conda install --yes libpython
+RUN PowerShell conda install --yes -c msys2 m2-base m2-make m2w64-toolchain
+RUN PowerShell conda install --yes libpython
 
-RUN pip install coverage xunitparser
+RUN PowerShell pip install tox
+
+RUN PowerShell tox -e py37
 
