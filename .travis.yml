@@ -23,6 +23,8 @@ jobs:
         - powershell "[System.Environment]::SetEnvironmentVariable('Path', \$env:Path + ';C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin', 'Machine')"
         - powershell "Write-Output \$env:Path"
         
+        - powershell "[System.Environment]::SetEnvironmentVariable('Path', \$env:Path + ';C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin', 'User')"
+        - powershell "Write-Output \$env:Path"
         #- powershell "Start-Process conda -ArgumentList 'install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython' "
 
         #- powershell "Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe"
