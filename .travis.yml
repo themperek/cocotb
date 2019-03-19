@@ -29,4 +29,4 @@ jobs:
       before_install:
         - docker build -t cocotb -f Dockerfile.windows .
       script:
-        - docker run cocotb make test
+        - docker run cocotb "python setup.py install; make test"
