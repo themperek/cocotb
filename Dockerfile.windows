@@ -16,10 +16,10 @@ RUN 7z e msys2-x86_64-latest.tar.xz
 RUN 7z x msys2-x86_64-latest.tar -o"C:\"
 RUN setx path "%path%;C:\msys64\usr\bin"
 
-RUN bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-python2 mingw-w64-x86_64-python2-pip make"
+RUN bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip mingw-w64-x86_64-python3-virtualenv make mingw-w64-x86_64-python3-tox"
 RUN setx path "%path%;C:\msys64\mingw64\bin"
 
-RUN pip install tox
-
+#RUN pip install tox
 #RUN make test
+
 RUN tox -e py27
