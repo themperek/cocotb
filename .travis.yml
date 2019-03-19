@@ -78,7 +78,7 @@ jobs:
       before_install:
         - docker build -t cocotb -f Dockerfile.windows .
       script:
-        - docker run cocotb powershell 'python setup.py install ; make test'
+        - docker run cocotb powershell 'python setup.py install ; make -d test'
 
     - stage: SimTests
       os: osx
