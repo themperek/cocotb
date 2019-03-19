@@ -22,4 +22,4 @@ RUN setx path "%path%;C:\msys64\mingw64\bin"
 #RUN pip install tox
 #RUN make test
 
-RUN tox -e py27
+RUN tox -e py36
