@@ -13,3 +13,5 @@ RUN conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython
 RUN Invoke-WebRequest -Uri http://bleyer.org/icarus/iverilog-10.1.1-x64_setup.exe -OutFile iverilog-10.1.1-x64_setup.exe
 RUN Start-Process .\iverilog-10.1.1-x64_setup -ArgumentList '/VERYSILENT' -Wait
 RUN [System.Environment]::SetEnvironmentVariable('Path', $env:Path+';C:\iverilog\bin', 'Machine')
+
+RUN python setup.py install
