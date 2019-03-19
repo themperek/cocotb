@@ -5,8 +5,9 @@ SHELL ["PowerShell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 COPY . /src
 WORKDIR "c:\src"
 
+
 RUN Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe
-RUN .\miniconda3.exe /S /D=C:\miniconda3 
+RUN Start-Process .\miniconda3.exe -ArgumentList '/S /D=C:\miniconda3'
 
 RUN dir C:\miniconda3
 
