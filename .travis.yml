@@ -18,10 +18,10 @@ jobs:
       os: windows
       language: shell
       before_install:
-        #- powershell "Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-        #- powershell "Start-Process .\miniconda3.exe -ArgumentList '/S /D=C:\miniconda3' -Wait"
+        - powershell "Invoke-WebRequest -outfile miniconda3.exe https://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe"
+        - powershell "Start-Process .\miniconda3.exe -ArgumentList '/S /D=C:\miniconda3' -Wait"
         - powershell "[System.Environment]::SetEnvironmentVariable('Path', \$env:Path + ';C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin', 'Machine')"
-        - powershell "Write-Output \$env:Path"
+        - powershell "\$env:Path = ';C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin' + \$env:Path ; conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython"
         
         - powershell "[System.Environment]::SetEnvironmentVariable('Path', \$env:Path + ';C:\miniconda3;C:\miniconda3\Library\mingw-w64\bin;C:\miniconda3\Library\usr\bin;C:\miniconda3\Library\bin;C:\miniconda3\Scripts;C:\miniconda3\bin;C:\miniconda3\condabin', 'User')"
         - powershell "Write-Output \$env:Path"
