@@ -74,7 +74,7 @@ jobs:
     - stage: SimTests
       os: osx
       language: generic
-      python: 3.6
+      python: 3.7
       before_install: *osx_prep
       script:
-        - tox -e py36
+        - tox -e py3=
