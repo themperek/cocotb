@@ -77,4 +77,4 @@ jobs:
       python: 3.7
       before_install: *osx_prep
       script:
-        - tox -e py3=
+        - tox -e py=3
