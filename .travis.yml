@@ -66,6 +66,7 @@ jobs:
       language: generic
       python: 2.7
       before_install: &osx_prep
+        - python -V
         - brew install icarus-verilog
         - pip install tox
       script:
@@ -74,8 +75,8 @@ jobs:
     - stage: SimTests
       os: osx
       osx_image: xcode11.2
-      language: generic
+      language: shell
       python: 3.7
       before_install: *osx_prep
       script:
-        - tox -e py=3
+        - tox -e py37
