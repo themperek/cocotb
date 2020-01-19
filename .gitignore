@@ -3,6 +3,8 @@
 # C extensions
 *.so
 
+*.vpl
+
 # C objects
 *.o
 
