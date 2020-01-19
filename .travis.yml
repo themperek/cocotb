@@ -25,6 +25,6 @@ jobs:
         - pip3 install tox
       script:
         - pip3 install -v -e .
-        - python3 cocotb/build_libs.py 
-        - PYTHON_BIN=python3 make
-        - tox -e py37
+        #- python3 cocotb/build_libs.py 
+        #- PYTHON_BIN=python3 make
+        - tox -v -e py37
