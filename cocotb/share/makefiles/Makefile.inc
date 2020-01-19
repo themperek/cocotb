@@ -65,7 +65,7 @@ export OS
 include $(COCOTB_SHARE_DIR)/makefiles/Makefile.paths
 include $(COCOTB_SHARE_DIR)/makefiles/Makefile.pylib
 
-export LIB_DIR=$(abspath $(COCOTB_SHARE_DIR)/../libs/$(SIM))
+export LIB_DIR=$(realpath $(COCOTB_SHARE_DIR)/../libs/$(SIM))
 export LIB_OBJ_DIR:= $(BUILD_DIR)/obj/$(ARCH)
 export INCLUDES := -I$(COCOTB_SHARE_DIR)/include -I$(PYTHON_INCLUDEDIR)
 
