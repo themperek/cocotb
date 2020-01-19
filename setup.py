@@ -103,7 +103,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Chris Higgs, Stuart Hodgson',
     author_email='cocotb@potentialventures.com',
-    install_requires=[],
+    install_requires=["pytest"],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     packages=find_packages(),
     include_package_data=True,
