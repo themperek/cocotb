@@ -79,10 +79,10 @@ ifeq ($(TOPLEVEL_LANG),verilog)
     ROOT_LEVEL = $(TOPLEVEL)
 ifneq ($(VHDL_SOURCES),)
     HDL_SOURCES += $(VHDL_SOURCES)
-    GPI_EXTRA = vhpi
+    GPI_EXTRA = cocotbvhpi
 endif
 else ifeq ($(TOPLEVEL_LANG),vhdl)
-    GPI_EXTRA = vhpi
+    GPI_EXTRA = cocotbvhpi
     EXTRA_ARGS += -v93
     EXTRA_ARGS += -top $(TOPLEVEL)
     RTL_LIBRARY ?= $(TOPLEVEL)
