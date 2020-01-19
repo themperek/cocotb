@@ -112,11 +112,19 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
     ld_library = sysconfig.get_config_var("LDLIBRARY")
 
 
+    #LIBDIR /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib
+    #DESTSHARED /usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/lib-dynload
+    #LIBRARY libpython3.7m.a
+    #LDLIBRARY Python.framework/Versions/3.7/Python
+
     print("LIBDIR", sysconfig.get_config_var("LIBDIR"))
     print("DESTSHARED", sysconfig.get_config_var("DESTSHARED"))
     print("LIBRARY", sysconfig.get_config_var("LIBRARY"))
     print("LDLIBRARY", sysconfig.get_config_var("LDLIBRARY"))
 
+    print("PYLIBS", os.path.splitext(sysconfig.get_config_var("LIBRARY"))[0][3:])
+    print("PYTHON_INCLUDEDIR", distutils.sysconfig.get_python_inc())
+    print("PYTHON_DYN_LIB", sysconfig.get_config_var("LDLIBRARY").replace(".a", ".so"))
 
     if ld_library:
         python_lib_link = os.path.splitext(ld_library)[0][3:]
@@ -124,12 +132,16 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         python_version = sysconfig.get_python_version().replace(".", "")
         python_lib_link = "python" + python_version
 
+    python_lib_link = os.path.splitext(sysconfig.get_config_var("LIBRARY"))[0][3:]
+
     if os.name == "nt":
         ext_name = "dll"
         python_lib = python_lib_link + "." + ext_name
     else:
         ext_name = "so"
         python_lib = "lib" + python_lib_link + "." + ext_name
+
+
 
     libcocotbutils = Extension(
         "libcocotbutils",
