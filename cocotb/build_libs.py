@@ -110,6 +110,14 @@ def _build_lib(lib, dist, build_dir):
 def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
 
     ld_library = sysconfig.get_config_var("LDLIBRARY")
+
+
+    print("LIBDIR", sysconfig.get_config_var("LIBDIR"))
+    print("DESTSHARED", sysconfig.get_config_var("DESTSHARED"))
+    print("LIBRARY", sysconfig.get_config_var("LIBRARY"))
+    print("LDLIBRARY", sysconfig.get_config_var("LDLIBRARY"))
+
+
     if ld_library:
         python_lib_link = os.path.splitext(ld_library)[0][3:]
     else:
