@@ -34,6 +34,8 @@ from setuptools.command.install import install
 from setuptools.command.develop import develop
 from os import path, walk, makedirs
 import cocotb
+from cocotb.build_libs import build
+
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
@@ -44,8 +46,6 @@ class PostInstallCommand(install):
         lib_dir = path.join(self.install_lib, "cocotb", "libs")
         if not path.exists(lib_dir):
             makedirs(lib_dir)
-
-        from cocotb.build_libs import build
 
         build(build_dir=lib_dir)
 
@@ -58,8 +58,6 @@ class PostDevelopCommand(develop):
         lib_dir = path.join(path.dirname(cocotb.__file__), "libs")
         if not path.exists(lib_dir):
             makedirs(lib_dir)
-
-        from cocotb.build_libs import build
 
         build(build_dir=lib_dir)
 
@@ -103,7 +101,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Chris Higgs, Stuart Hodgson',
     author_email='cocotb@potentialventures.com',
-    install_requires=["pytest"],
+    install_requires=[],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     packages=find_packages(),
     include_package_data=True,

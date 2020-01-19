@@ -299,7 +299,7 @@ def build(build_dir="cocotb_build"):
             os.path.join(icarus_build_dir, icarus_vpi_lib_name),
             os.path.join(icarus_build_dir, "gpivpi.vpl"),
         )
-    
+
     return
 
     #
