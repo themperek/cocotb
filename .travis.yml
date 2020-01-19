@@ -14,16 +14,6 @@ services:
 
 jobs:
   include:
-
-    - stage: SimTests
-      python: 3.7
-      os: windows
-      language: shell
-      before_install:
-        - docker build -t cocotb -f Dockerfile.windows .
-      script:
-        - docker run cocotb powershell 'python setup.py install ; make test'
-
     - stage: SimTests
       os: osx
       osx_image: xcode11.2
@@ -32,12 +22,6 @@ jobs:
       before_install: &osx_prep
         - brew update-reset
         - brew install icarus-verilog
-        - pip3 install tox
+        - pip install tox
       script:
-        - pip3 install -v -e .
-        - python3 cocotb/build_libs.py 
-        - PYTHON_BIN=python3 make
         - tox -e py37
-
-
-
