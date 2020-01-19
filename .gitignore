@@ -3,6 +3,8 @@
 # C extensions
 *.so
 
+*.vpl
+
 # C objects
 *.o
 
@@ -37,6 +39,10 @@ __pycache__
 # Results
 results.xml
 combined_results.xml
+.tox
+examples/endian_swapper/cosim/endian_swapper_hal_wrap.c
+examples/endian_swapper/cosim/hal.py
+examples/endian_swapper/tests/wavedrom.json
 
 # VCS files
 *.tab

@@ -30,7 +30,36 @@
 
 from setuptools import setup
 from setuptools import find_packages
-from os import path, walk
+from setuptools.command.install import install
+from setuptools.command.develop import develop
+from os import path, walk, makedirs
+import cocotb
+from cocotb.build_libs import build
+
+
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+
+    def run(self):
+        install.run(self)
+
+        lib_dir = path.join(self.install_lib, "cocotb", "libs")
+        if not path.exists(lib_dir):
+            makedirs(lib_dir)
+
+        build(build_dir=lib_dir)
+
+class PostDevelopCommand(develop):
+    """Post-installation for develop mode."""
+
+    def run(self):
+        develop.run(self)
+
+        lib_dir = path.join(path.dirname(cocotb.__file__), "libs")
+        if not path.exists(lib_dir):
+            makedirs(lib_dir)
+
+        build(build_dir=lib_dir)
 
 def read_file(fname):
     return open(path.join(path.dirname(__file__), fname)).read()
@@ -45,8 +74,25 @@ def package_files(directory):
 # this sets the __version__ variable
 exec(read_file(path.join('cocotb', '_version.py')))
 
+# force platform specyfic wheel  (root_is_pure)
+try:
+    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+
+    class bdist_wheel(_bdist_wheel):
+        def finalize_options(self):
+            _bdist_wheel.finalize_options(self)
+            self.root_is_pure = False
+
+except ImportError:
+    bdist_wheel = None
+
 setup(
     name='cocotb',
+        cmdclass={
+        "install": PostInstallCommand,
+        "develop": PostDevelopCommand,
+        "bdist_wheel": bdist_wheel,
+    },
     version=__version__,  # noqa: F821
     description='cocotb is a coroutine based cosimulation library for writing VHDL and Verilog testbenches in Python.',
     url='https://github.com/cocotb/cocotb',
