@@ -122,6 +122,8 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
     print("LIBRARY", sysconfig.get_config_var("LIBRARY"))
     print("LDLIBRARY", sysconfig.get_config_var("LDLIBRARY"))
 
+    python_lib_dir = sysconfig.get_config_var("LIBDIR")
+
     print("PYLIBS", os.path.splitext(sysconfig.get_config_var("LIBRARY"))[0][3:])
     print("PYTHON_INCLUDEDIR", distutils.sysconfig.get_python_inc())
     print("PYTHON_DYN_LIB", sysconfig.get_config_var("LDLIBRARY").replace(".a", ".so"))
@@ -160,7 +162,7 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         "libgpilog",
         include_dirs=[include_dir],
         libraries=[python_lib_link, "pthread", "m", "cocotbutils"],
-        library_dirs=[build_dir],
+        library_dirs=[build_dir, python_lib_dir],
         sources=[os.path.join(share_lib_dir, "gpi_log", "gpi_logging.c")],
         extra_link_args=gpilog_ex_link_args,
     )
