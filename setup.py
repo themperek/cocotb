@@ -45,9 +45,9 @@ class PostInstallCommand(install):
         if not path.exists(lib_dir):
             makedirs(lib_dir)
 
-        from cocotb.build_libs import build_libs
+        from cocotb.build_libs import build
 
-        build_libs(build_dir=lib_dir)
+        build(build_dir=lib_dir)
 
 class PostDevelopCommand(develop):
     """Post-installation for develop mode."""
@@ -59,9 +59,9 @@ class PostDevelopCommand(develop):
         if not path.exists(lib_dir):
             makedirs(lib_dir)
 
-        from cocotb.build_libs import build_libs
+        from cocotb.build_libs import build
 
-        build_libs(build_dir=lib_dir)
+        build(build_dir=lib_dir)
 
 def read_file(fname):
     return open(path.join(path.dirname(__file__), fname)).read()
