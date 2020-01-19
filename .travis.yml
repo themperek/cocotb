@@ -32,9 +32,10 @@ jobs:
       before_install: &osx_prep
         - brew update-reset
         - brew install icarus-verilog
-        - pip install tox
+        - pip3 install tox
       script:
-        - pip install -v -e .
+        - pip3 install -v -e .
+        - PYTHON_BIN=python3 make
         - tox -e py37
 
 
