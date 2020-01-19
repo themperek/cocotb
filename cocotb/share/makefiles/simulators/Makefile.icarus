@@ -72,7 +72,7 @@ NEW_PYTHONPATH:=$(shell python -c "import sys, os; print(':'.join(['/'+dir.repla
 PWD = $(shell pwd)
 
 else
-LIB_LOAD := LD_LIBRARY_PATH=$(LIB_DIR):$(LD_LIBRARY_PATH)
+LIB_LOAD := 
 NEW_PYTHONPATH := $(PYTHONPATH)
 endif
 
