@@ -33,9 +33,7 @@ from setuptools import find_packages
 from setuptools.command.install import install
 from setuptools.command.develop import develop
 from os import path, walk, makedirs
-import cocotb
 from cocotb.build_libs import build
-
 
 class PostInstallCommand(install):
     """Post-installation for installation mode."""
@@ -49,13 +47,13 @@ class PostInstallCommand(install):
 
         build(build_dir=lib_dir)
 
-class PostDevelopCommand(develop):
+class PostInstallCommandDev(develop):
     """Post-installation for develop mode."""
 
     def run(self):
         develop.run(self)
 
-        lib_dir = path.join(path.dirname(cocotb.__file__), "libs")
+        lib_dir = path.join(self.egg_path, "cocotb", "libs")
         if not path.exists(lib_dir):
             makedirs(lib_dir)
 
@@ -74,7 +72,7 @@ def package_files(directory):
 # this sets the __version__ variable
 exec(read_file(path.join('cocotb', '_version.py')))
 
-# force platform specyfic wheel  (root_is_pure)
+# force platform specific wheel  (root_is_pure)
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
@@ -90,7 +88,7 @@ setup(
     name='cocotb',
         cmdclass={
         "install": PostInstallCommand,
-        "develop": PostDevelopCommand,
+        "develop": PostInstallCommandDev,
         "bdist_wheel": bdist_wheel,
     },
     version=__version__,  # noqa: F821

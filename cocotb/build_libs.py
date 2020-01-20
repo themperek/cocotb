@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-
-# Copyright (c) 2013 Potential Ventures Ltd
-# Copyright (c) 2013 SolarFlare Communications Inc
+# Copyright (c) cocotb contributors
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -11,8 +8,7 @@
 #     * Redistributions in binary form must reproduce the above copyright
 #       notice, this list of conditions and the following disclaimer in the
 #       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Potential Ventures Ltd,
-#       SolarFlare Communications Inc nor the
+#     * Neither the name of the copyright holder nor the
 #       names of its contributors may be used to endorse or promote products
 #       derived from this software without specific prior written permission.
 #
@@ -78,7 +74,7 @@ def _rename_safe(target, link_name):
 
 
 def _build_lib(lib, dist, build_dir):
-    """Use setuptools to build `lib` into `build_dir`."""
+    """Use setuptools to build *lib* into *build_dir*."""
 
     dist.ext_modules = [lib]
 
@@ -109,9 +105,10 @@ def _build_lib(lib, dist, build_dir):
 
 def _extra_link_args(lib_name):
     if sys.platform == "darwin":
-        return  ["-Wl,-install_name,@loader_path/%s.so" % lib_name]
+        return ["-Wl,-install_name,@loader_path/%s.so" % lib_name]
     else:
         return []
+
 
 def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
 
@@ -195,7 +192,7 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
     )
 
     _build_lib(libgpi, dist, build_dir)
-    
+
     #
     #  simulator
     #
@@ -243,8 +240,8 @@ def build_vhpi_lib(
     extra_lib=[],
     extra_lib_dir=[],
 ):
-    libvhpi = Extension(
-        "libvhpi",
+    libcocotbvhpi = Extension(
+        "libcocotbvhpi",
         include_dirs=[include_dir],
         define_macros=[("VHPI_CHECKING", 1)] + [(sim_define, "")],
         libraries=["gpi", "gpilog", "stdc++"] + extra_lib,
@@ -256,10 +253,10 @@ def build_vhpi_lib(
         extra_link_args=["-Wl,-rpath,$ORIGIN"],
     )
 
-    return _build_lib(libvhpi, dist, build_dir)
+    return _build_lib(libcocotbvhpi, dist, build_dir)
 
 
-def build(build_dir="cocotb_build"):
+def build(build_dir):
 
     logger = logging.getLogger(__name__)
 
@@ -294,7 +291,7 @@ def build(build_dir="cocotb_build"):
         iverilog_path = find_executable("iverilog")
         if iverilog_path is None:
             logger.warning(
-                "Icarus Verilog executable not found. VPI interface will not be avaliable."
+                "Icarus Verilog executable not found. VPI interface will be available."
             )
             icarus_compile = False
         else:
@@ -332,7 +329,7 @@ def build(build_dir="cocotb_build"):
     if os.name == "nt":
         if vsim_path is None:
             logger.warning(
-                "Modelsim/Questa executable (vopt) not found. VPI interface will not be avaliable."
+                "Modelsim/Questa executable (vopt) not found. VPI interface will be available."
             )
             modelsim_compile = False
         else:
@@ -355,7 +352,7 @@ def build(build_dir="cocotb_build"):
 
     if vsim_path is None:
         logger.warning(
-            "Modelsim/Questa executable (vopt) executable not found. FLI interface will not be avaliable."
+            "Modelsim/Questa executable (vopt) executable not found. FLI interface will be available."
         )
     else:
         modelsim_dir = os.path.dirname(os.path.dirname(vsim_path))
@@ -444,7 +441,7 @@ def build(build_dir="cocotb_build"):
     vsimsa_path = find_executable("vsimsa")
     if vsimsa_path is None:
         logger.warning(
-            "Riviera executable not found. No VPI/VHPI interface will not be avaliable."
+            "Riviera executable not found. No VPI/VHPI interface will be available."
         )
     else:
         logger.warning("Compiling interface libraries for Aldec ...")
