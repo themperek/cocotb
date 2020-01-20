@@ -51,7 +51,14 @@ def _rename_safe(target, link_name):
     """Rename or symlink on Mac or copy on Windows."""
 
     if sys.platform == "darwin":  # On Mac there is an issue with rename? Workaround!
-        shutil.copy2(target, link_name)
+        try:
+            os.symlink(target, link_name)
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                os.remove(link_name)
+                os.symlink(target, link_name)
+            else:
+                raise e
         return
 
     if (
@@ -100,6 +107,12 @@ def _build_lib(lib, dist, build_dir):
     return lib_name + "." + ext_name
 
 
+def _extra_link_args(lib_name):
+    if sys.platform == "darwin":
+        return  ["-Wl,-install_name,@loader_path/%s.so" % lib_name]
+    else:
+        return []
+
 def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
 
     if sys.platform == "darwin":
@@ -120,19 +133,23 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         ext_name = "so"
         python_lib = "lib" + python_lib_link + "." + ext_name
 
+    #
+    #  libcocotbutils
+    #
     libcocotbutils = Extension(
         "libcocotbutils",
         include_dirs=[include_dir],
         sources=[os.path.join(share_lib_dir, "utils", "cocotb_utils.c")],
-        extra_link_args=["-Wl,-rpath,@loader_path"],
+        extra_link_args=_extra_link_args("libcocotbutils")
     )
 
     _build_lib(libcocotbutils, dist, build_dir)
 
-    gpilog_ex_link_args = []
+    #
+    #  libgpilog
+    #
     gpilog_library_dirs = [build_dir]
     if sys.platform == "darwin":
-        gpilog_ex_link_args = ["-Wl,-rpath," + sysconfig.get_config_var("LIBDIR")]
         gpilog_library_dirs = [build_dir, sysconfig.get_config_var("LIBDIR")]
 
     libgpilog = Extension(
@@ -141,11 +158,14 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         libraries=[python_lib_link, "pthread", "m", "cocotbutils"],
         library_dirs=gpilog_library_dirs,
         sources=[os.path.join(share_lib_dir, "gpi_log", "gpi_logging.c")],
-        extra_link_args=gpilog_ex_link_args,
+        extra_link_args=_extra_link_args("libgpilog")
     )
 
     _build_lib(libgpilog, dist, build_dir)
 
+    #
+    #  libgpilog
+    #
     libcocotb = Extension(
         "libcocotb",
         define_macros=[("PYTHON_SO_LIB", python_lib)],
@@ -153,11 +173,14 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         library_dirs=[build_dir],
         libraries=["gpilog", "cocotbutils"],
         sources=[os.path.join(share_lib_dir, "embed", "gpi_embed.c")],
-        extra_link_args=["-Wl,-rpath,@loader_path"],
+        extra_link_args=_extra_link_args("libcocotb")
     )
 
     _build_lib(libcocotb, dist, build_dir)
 
+    #
+    #  libgpilog
+    #
     libgpi = Extension(
         "libgpi",
         define_macros=[("LIB_EXT", ext_name), ("SINGLETON_HANDLES", "")],
@@ -168,11 +191,14 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
             os.path.join(share_lib_dir, "gpi", "GpiCbHdl.cpp"),
             os.path.join(share_lib_dir, "gpi", "GpiCommon.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,@loader_path"],
+        extra_link_args=_extra_link_args("libgpi")
     )
 
     _build_lib(libgpi, dist, build_dir)
-
+    
+    #
+    #  simulator
+    #
     libsim = Extension(
         "simulator",
         include_dirs=[include_dir],
@@ -203,7 +229,7 @@ def build_vpi_lib(
             os.path.join(share_lib_dir, "vpi", "VpiImpl.cpp"),
             os.path.join(share_lib_dir, "vpi", "VpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,@loader_path"],
+        extra_link_args=["-Wl,-rpath,$ORIGIN"],
     )
     return _build_lib(libvpi, dist, build_dir)
 
@@ -227,7 +253,7 @@ def build_vhpi_lib(
             os.path.join(share_lib_dir, "vhpi", "VhpiImpl.cpp"),
             os.path.join(share_lib_dir, "vhpi", "VhpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,@loader_path"],
+        extra_link_args=["-Wl,-rpath,$ORIGIN"],
     )
 
     return _build_lib(libvhpi, dist, build_dir)
@@ -237,8 +263,8 @@ def build(build_dir="cocotb_build"):
 
     logger = logging.getLogger(__name__)
 
-    #  distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
-    distutils.log.set_verbosity(distutils.log.DEBUG)  # Set DEBUG level
+    distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
+    # distutils.log.set_verbosity(distutils.log.DEBUG) # Set DEBUG level
 
     cfg_vars = distutils.sysconfig.get_config_vars()
     for key, value in cfg_vars.items():
@@ -343,7 +369,7 @@ def build(build_dir="cocotb_build"):
                 os.path.join(share_lib_dir, "fli", "FliCbHdl.cpp"),
                 os.path.join(share_lib_dir, "fli", "FliObjHdl.cpp"),
             ],
-            extra_link_args=["-Wl,-rpath,@loader_path"],
+            extra_link_args=["-Wl,-rpath,$ORIGIN"],
         )
 
         try:
