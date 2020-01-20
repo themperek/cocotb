@@ -131,7 +131,7 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         "libcocotbutils",
         include_dirs=[include_dir],
         sources=[os.path.join(share_lib_dir, "utils", "cocotb_utils.c")],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,@loader_path"],
     )
 
     _build_lib(libcocotbutils, dist, build_dir)
@@ -160,7 +160,7 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         library_dirs=[build_dir],
         libraries=["gpilog", "cocotbutils"],
         sources=[os.path.join(share_lib_dir, "embed", "gpi_embed.c")],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,@loader_path"],
     )
 
     _build_lib(libcocotb, dist, build_dir)
@@ -175,7 +175,7 @@ def build_common_libs(build_dir, include_dir, share_lib_dir, dist):
             os.path.join(share_lib_dir, "gpi", "GpiCbHdl.cpp"),
             os.path.join(share_lib_dir, "gpi", "GpiCommon.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,@loader_path"],
     )
 
     _build_lib(libgpi, dist, build_dir)
@@ -234,7 +234,7 @@ def build_vhpi_lib(
             os.path.join(share_lib_dir, "vhpi", "VhpiImpl.cpp"),
             os.path.join(share_lib_dir, "vhpi", "VhpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,@loader_path"],
     )
 
     return _build_lib(libvhpi, dist, build_dir)
@@ -350,7 +350,7 @@ def build(build_dir="cocotb_build"):
                 os.path.join(share_lib_dir, "fli", "FliCbHdl.cpp"),
                 os.path.join(share_lib_dir, "fli", "FliObjHdl.cpp"),
             ],
-            extra_link_args=["-Wl,-rpath,$ORIGIN"],
+            extra_link_args=["-Wl,-rpath,@loader_path"],
         )
 
         try:
