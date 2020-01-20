@@ -88,7 +88,7 @@ jobs:
         - pip install tox
       script:
         - pip3 install -v .
-        - make
+        - PYTHON_BIN=python3 make
         - tox -e py37
 
     - stage: SimTests

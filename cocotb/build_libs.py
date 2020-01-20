@@ -244,8 +244,8 @@ def build(build_dir="cocotb_build"):
 
     logger = logging.getLogger(__name__)
 
-    distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
-    # distutils.log.set_verbosity(distutils.log.DEBUG) # Set DEBUG level
+    #distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
+    distutils.log.set_verbosity(distutils.log.DEBUG) # Set DEBUG level
 
     cfg_vars = distutils.sysconfig.get_config_vars()
     for key, value in cfg_vars.items():
