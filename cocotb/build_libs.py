@@ -210,7 +210,7 @@ def build_vpi_lib(
             os.path.join(share_lib_dir, "vpi", "VpiImpl.cpp"),
             os.path.join(share_lib_dir, "vpi", "VpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,@loader_path"],
     )
     return _build_lib(libvpi, dist, build_dir)
 
@@ -244,8 +244,8 @@ def build(build_dir="cocotb_build"):
 
     logger = logging.getLogger(__name__)
 
-    #distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
-    distutils.log.set_verbosity(distutils.log.DEBUG) # Set DEBUG level
+    #  distutils.log.set_verbosity(0)  # Disable logging comiliation commands in disutils
+    distutils.log.set_verbosity(distutils.log.DEBUG)  # Set DEBUG level
 
     cfg_vars = distutils.sysconfig.get_config_vars()
     for key, value in cfg_vars.items():
