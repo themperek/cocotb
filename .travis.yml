@@ -87,6 +87,8 @@ jobs:
         - brew install icarus-verilog
         - pip install tox
       script:
+        - pip3 install -v .
+        - make
         - tox -e py37
 
     - stage: SimTests
