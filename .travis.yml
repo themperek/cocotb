@@ -87,7 +87,7 @@ jobs:
         - brew install icarus-verilog
         - pip install tox
       script:
-        - pip3 install -v .
+        - pip3 install -v -e .
         - PYTHON_BIN=python3 make
         - tox -e py37
 
