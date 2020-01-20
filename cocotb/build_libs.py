@@ -51,14 +51,7 @@ def _rename_safe(target, link_name):
     """Rename or symlink on Mac or copy on Windows."""
 
     if sys.platform == "darwin":  # On Mac there is an issue with rename? Workaround!
-        try:
-            os.symlink(target, link_name)
-        except OSError as e:
-            if e.errno == errno.EEXIST:
-                os.remove(link_name)
-                os.symlink(target, link_name)
-            else:
-                raise e
+        shutil.copy2(target, link_name)
         return
 
     if (
