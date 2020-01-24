@@ -80,6 +80,9 @@ ifeq ($(SIM_DEFINE),XCELIUM)
 SIM_DEFINE = IUS
 endif
 
+PYTHONPATH:=$(COCOTB_PY_DIR)/cocotb/libs/:$(PYTHONPATH)
+LD_LIBRARY_PATH:=$(COCOTB_PY_DIR)/cocotb/libs/:$(PYTHONPATH)
+
 export LIB_DIR=$(COCOTB_PY_DIR)/cocotb/libs/$(shell echo $(SIM_DEFINE) | tr A-Z a-z)
 export LIB_OBJ_DIR:= $(BUILD_DIR)/obj/$(ARCH)
 export INCLUDES := -I$(COCOTB_SHARE_DIR)/include -I$(PYTHON_INCLUDEDIR)

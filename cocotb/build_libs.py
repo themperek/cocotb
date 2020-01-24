@@ -16,69 +16,39 @@ from distutils.spawn import find_executable
 from setuptools.command.build_ext import build_ext as _build_ext
 
 
-# Needed for Windows to not assume python module (generate interface in def file)
+def get_ext_filename_without_platform_suffix(filename):
+    name, ext = os.path.splitext(filename)
+    ext_suffix = sysconfig.get_config_var("EXT_SUFFIX")
+
+    if ext_suffix == ext:
+        return filename
+
+    ext_suffix = ext_suffix.replace(ext, "")
+    idx = name.find(ext_suffix)
+
+    if idx == -1:
+        return filename
+    else:
+        return name[:idx] + ext
+
+
 class build_ext(_build_ext):
+
+    # Needed for Windows to not assume python module (generate interface in def file)
     def get_export_symbols(self, ext):
         return None
 
+    # For proper library name, based on https://github.com/cython/cython/issues/1740
+    def get_ext_filename(self, ext_name):
+        filename = super().get_ext_filename(ext_name)
 
-def _rename_safe(target, link_name):
-    """Rename or symlink on Mac or copy on Windows."""
+        filename_short = get_ext_filename_without_platform_suffix(filename)
 
-    if sys.platform == "darwin":  # On Mac there is an issue with rename? Workaround!
-        try:
-            os.symlink(target, link_name)
-        except OSError as e:
-            if e.errno == errno.EEXIST:
-                os.remove(link_name)
-                os.symlink(target, link_name)
-            else:
-                raise e
-        return
+        # icarus requires vpl extenasion
+        if filename.find("icarus") >= 0:
+            filename_short = filename_short.replace("libvpi.so", "gpivpi.vpl")
 
-    if (
-        os.name == "nt"
-    ):  # On Windows there is an issue with symlink and rename? !Workaround!
-        shutil.copy2(target, link_name)
-        return
-
-    try:
-        os.rename(target, link_name)
-    except OSError as e:
-        if e.errno == errno.EEXIST:
-            os.remove(link_name)
-            os.rename(target, link_name)
-        else:
-            raise e
-
-
-def _build_lib(lib, dist, build_dir):
-    """Use setuptools to build *lib* into *build_dir*."""
-
-    dist.ext_modules = [lib]
-
-    _build_ext = build_ext(dist)
-    _build_ext.build_lib = build_dir
-
-    _build_ext.finalize_options()
-
-    _build_ext.run()
-    out_lib = _build_ext.get_outputs()
-
-    lib_name = lib.name
-    lib_path = os.path.abspath(out_lib[0])
-    dir_name = os.path.dirname(lib_path)
-    ext_name = os.path.splitext(lib_path)[1][1:]
-    if os.name == "nt":
-        ext_name = "dll"
-
-    target = os.path.join(os.path.abspath(dir_name), lib_name + "." + ext_name)
-    if target != lib_path:
-        _rename_safe(
-            lib_path, os.path.join(os.path.abspath(dir_name), lib_name + "." + ext_name)
-        )
-
-    return lib_name + "." + ext_name
+        return filename_short
 
 
 def _extra_link_args(lib_name):
@@ -88,7 +58,7 @@ def _extra_link_args(lib_name):
         return []
 
 
-def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
+def _get_common_lib_ext(build_dir, include_dir, share_lib_dir, dist):
 
     if sys.platform == "darwin":
         ld_library = sysconfig.get_config_var("LIBRARY")
@@ -118,8 +88,6 @@ def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         extra_link_args=_extra_link_args("libcocotbutils"),
     )
 
-    _build_lib(libcocotbutils, dist, build_dir)
-
     #
     #  libgpilog
     #
@@ -136,8 +104,6 @@ def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         extra_link_args=_extra_link_args("libgpilog"),
     )
 
-    _build_lib(libgpilog, dist, build_dir)
-
     #
     #  libcocotb
     #
@@ -150,8 +116,6 @@ def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         sources=[os.path.join(share_lib_dir, "embed", "gpi_embed.c")],
         extra_link_args=_extra_link_args("libcocotb"),
     )
-
-    _build_lib(libcocotb, dist, build_dir)
 
     #
     #  libgpi
@@ -169,8 +133,6 @@ def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         extra_link_args=_extra_link_args("libgpi"),
     )
 
-    _build_lib(libgpi, dist, build_dir)
-
     #
     #  simulator
     #
@@ -182,10 +144,10 @@ def _build_common_libs(build_dir, include_dir, share_lib_dir, dist):
         sources=[os.path.join(share_lib_dir, "simulator", "simulatormodule.c")],
     )
 
-    _build_lib(libsim, dist, build_dir)
+    return [libcocotbutils, libgpilog, libcocotb, libgpi, libsim]
 
 
-def _build_vpi_lib(
+def _get_vpi_lib_ext(
     build_dir,
     include_dir,
     share_lib_dir,
@@ -195,7 +157,7 @@ def _build_vpi_lib(
     extra_lib_dir=[],
 ):
     libvpi = Extension(
-        "libvpi",
+        sim_define.lower() + "/libvpi",
         define_macros=[("VPI_CHECKING", "1")] + [(sim_define, "")],
         include_dirs=[include_dir],
         libraries=["gpi", "gpilog"] + extra_lib,
@@ -204,12 +166,13 @@ def _build_vpi_lib(
             os.path.join(share_lib_dir, "vpi", "VpiImpl.cpp"),
             os.path.join(share_lib_dir, "vpi", "VpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,$ORIGIN/.."],
     )
-    return _build_lib(libvpi, dist, build_dir)
+
+    return libvpi
 
 
-def _build_vhpi_lib(
+def _get_vhpi_lib_ext(
     build_dir,
     include_dir,
     share_lib_dir,
@@ -219,7 +182,7 @@ def _build_vhpi_lib(
     extra_lib_dir=[],
 ):
     libcocotbvhpi = Extension(
-        "libcocotbvhpi",
+        sim_define.lower() + "/libcocotbvhpi",
         include_dirs=[include_dir],
         define_macros=[("VHPI_CHECKING", 1)] + [(sim_define, "")],
         libraries=["gpi", "gpilog", "stdc++"] + extra_lib,
@@ -228,10 +191,10 @@ def _build_vhpi_lib(
             os.path.join(share_lib_dir, "vhpi", "VhpiImpl.cpp"),
             os.path.join(share_lib_dir, "vhpi", "VhpiCbHdl.cpp"),
         ],
-        extra_link_args=["-Wl,-rpath,$ORIGIN"],
+        extra_link_args=["-Wl,-rpath,$ORIGIN/.."],
     )
 
-    return _build_lib(libcocotbvhpi, dist, build_dir)
+    return libcocotbvhpi
 
 
 def build(build_dir, debug=False):
@@ -259,11 +222,11 @@ def build(build_dir, debug=False):
     dist = Distribution()
     dist.parse_config_files()
 
+    ext = _get_common_lib_ext(build_dir, include_dir, share_lib_dir, dist)
+
     #
     #  Icarus Verilog
     #
-    logger.warning("Compiling interface libraries for Icarus Verilog ...")
-    icarus_build_dir = os.path.join(build_dir, "icarus")
     icarus_compile = True
     icarus_extra_lib = []
     icarus_extra_lib_path = []
@@ -280,9 +243,8 @@ def build(build_dir, debug=False):
             icarus_extra_lib_path = [os.path.join(icarus_path, "lib")]
 
     if icarus_compile:
-        _build_common_libs(icarus_build_dir, include_dir, share_lib_dir, dist)
-        icarus_vpi_lib_name = _build_vpi_lib(
-            build_dir=icarus_build_dir,
+        icarus_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
@@ -291,21 +253,17 @@ def build(build_dir, debug=False):
             extra_lib_dir=icarus_extra_lib_path,
         )
 
-        _rename_safe(
-            os.path.join(icarus_build_dir, icarus_vpi_lib_name),
-            os.path.join(icarus_build_dir, "gpivpi.vpl"),
-        )
+        ext.append(icarus_vpi_ext)
+
+    logger.warning("Compiling interface libraries for cocotb ...")
 
     #
     #  Modelsim/Questa
     #
-    logger.warning("Compiling interface libraries for Modelsim/Questa ...")
     vsim_path = find_executable("vdbg")
-    modelsim_build_dir = os.path.join(build_dir, "modelsim")
     modelsim_compile = True
     modelsim_extra_lib = []
     modelsim_extra_lib_path = []
-
     if os.name == "nt":
         if vsim_path is None:
             logger.warning(
@@ -318,10 +276,8 @@ def build(build_dir, debug=False):
             modelsim_extra_lib_path = [modelsim_bin_dir]
 
     if modelsim_compile:
-        _build_common_libs(modelsim_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=modelsim_build_dir,
+        modelsim_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
@@ -329,6 +285,8 @@ def build(build_dir, debug=False):
             extra_lib=modelsim_extra_lib,
             extra_lib_dir=modelsim_extra_lib_path,
         )
+
+        ext.append(modelsim_vpi_ext)
 
     if vsim_path is None:
         logger.warning(
@@ -338,11 +296,11 @@ def build(build_dir, debug=False):
         modelsim_dir = os.path.dirname(os.path.dirname(vsim_path))
         modelsim_include_dir = os.path.join(modelsim_dir, "include")
         if os.path.isfile(os.path.join(modelsim_include_dir, "mti.h")):
-            libfli = Extension(
+            fli_ext = Extension(
                 "libfli",
                 include_dirs=[include_dir, modelsim_include_dir],
                 libraries=["gpi", "gpilog", "stdc++"] + modelsim_extra_lib,
-                library_dirs=[modelsim_build_dir] + modelsim_extra_lib_path,
+                library_dirs=[build_dir] + modelsim_extra_lib_path,
                 sources=[
                     os.path.join(share_lib_dir, "fli", "FliImpl.cpp"),
                     os.path.join(share_lib_dir, "fli", "FliCbHdl.cpp"),
@@ -351,7 +309,8 @@ def build(build_dir, debug=False):
                 extra_link_args=["-Wl,-rpath,$ORIGIN"],
             )
 
-            _build_lib(libfli, dist, modelsim_build_dir)
+            ext.append(fli_ext)
+
         else:
             logger.warning(
                 "Building FLI interface for Modelsim failed! No mti.h available."
@@ -361,60 +320,49 @@ def build(build_dir, debug=False):
     # GHDL
     #
     if os.name == "posix":
-        logger.warning("Compiling interface libraries for GHDL ...")
-        ghdl_build_dir = os.path.join(build_dir, "ghdl")
-
-        _build_common_libs(ghdl_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=ghdl_build_dir,
+        ghdl_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
             sim_define="GHDL",
         )
+        ext.append(ghdl_vpi_ext)
 
     #
     # IUS
     #
     if os.name == "posix":
-        logger.warning("Compiling interface libraries for IUS ...")
-        ius_build_dir = os.path.join(build_dir, "ius")
-
-        _build_common_libs(ius_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=ius_build_dir,
+        ius_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
             sim_define="IUS",
         )
+        ext.append(ius_vpi_ext)
 
-        _build_vhpi_lib(
-            build_dir=ius_build_dir,
+        ius_vhpi_ext = _get_vhpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
             sim_define="IUS",
         )
+        ext.append(ius_vhpi_ext)
 
     #
     # VCS
     #
     if os.name == "posix":
-        logger.warning("Compiling interface libraries for VCS ...")
-        vcs_build_dir = os.path.join(build_dir, "vcs")
-
-        _build_common_libs(vcs_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=vcs_build_dir,
+        vcs_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
             sim_define="VCS",
         )
+        ext.append(vcs_vpi_ext)
 
     #
     # Aldec
@@ -425,16 +373,12 @@ def build(build_dir, debug=False):
             "Riviera executable (vsimsa) not found. No VPI/VHPI interface will be available."
         )
     else:
-        logger.warning("Compiling interface libraries for Aldec ...")
-        aldec_build_dir = os.path.join(build_dir, "aldec")
         aldec_path = os.path.dirname(vsimsa_path)
         aldec_extra_lib = ["aldecpli"]
         aldec_extra_lib_path = [aldec_path]
 
-        _build_common_libs(aldec_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=aldec_build_dir,
+        aldec_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
@@ -442,9 +386,10 @@ def build(build_dir, debug=False):
             extra_lib=aldec_extra_lib,
             extra_lib_dir=aldec_extra_lib_path,
         )
+        ext.append(aldec_vpi_ext)
 
-        _build_vhpi_lib(
-            build_dir=aldec_build_dir,
+        aldec_vhpi_ext = _get_vhpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
@@ -452,22 +397,23 @@ def build(build_dir, debug=False):
             extra_lib=aldec_extra_lib,
             extra_lib_dir=aldec_extra_lib_path,
         )
+        ext.append(aldec_vhpi_ext)
 
     #
     # Verilator
     #
     if os.name == "posix":
-        logger.warning("Compiling interface libraries for Verilator ...")
-        vcs_build_dir = os.path.join(build_dir, "verilator")
-
-        _build_common_libs(vcs_build_dir, include_dir, share_lib_dir, dist)
-
-        _build_vpi_lib(
-            build_dir=vcs_build_dir,
+        verilator_vpi_ext = _get_vpi_lib_ext(
+            build_dir=build_dir,
             include_dir=include_dir,
             share_lib_dir=share_lib_dir,
             dist=dist,
             sim_define="VERILATOR",
         )
+        ext.append(verilator_vpi_ext)
 
-    return
+    dist.ext_modules = ext
+    _build_ext = build_ext(dist)
+    _build_ext.build_lib = build_dir
+    _build_ext.finalize_options()
+    _build_ext.run()
