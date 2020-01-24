@@ -295,8 +295,7 @@ def build(build_dir, debug=False):
                 "libfli",
                 include_dirs=[include_dir, modelsim_include_dir],
                 libraries=["gpi", "gpilog", "stdc++"] + modelsim_extra_lib,
-                library_dirs=[os.path.join(build_dir, "modelsim")]
-                + modelsim_extra_lib_path,
+                library_dirs=[os.path.join(build_dir, "modelsim")] + modelsim_extra_lib_path,
                 sources=[
                     os.path.join(share_lib_dir, "fli", "FliImpl.cpp"),
                     os.path.join(share_lib_dir, "fli", "FliCbHdl.cpp"),
