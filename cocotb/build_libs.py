@@ -53,7 +53,7 @@ class build_ext(_build_ext):
 
 def _extra_link_args(lib_name):
     if sys.platform == "darwin":
-        return ["-Wl,-install_name,@loader_path/%s.so" % lib_name]
+        return ["-Wl,-install_name,@loader_path/../%s.so" % lib_name]
     else:
         return []
 
