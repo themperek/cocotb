@@ -16,7 +16,7 @@
 #       names of its contributors may be used to endorse or promote products
 #       derived from this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 # DISCLAIMED. IN NO EVENT SHALL POTENTIAL VENTURES LTD BE LIABLE FOR ANY
@@ -30,34 +30,9 @@
 
 from setuptools import setup
 from setuptools import find_packages
-from setuptools.command.install import install
-from setuptools.command.develop import develop
 from os import path, walk, makedirs
-from cocotb.build_libs import build
-
-class PostInstallCommand(install):
-    """Post-installation for installation mode."""
-
-    def run(self):
-        install.run(self)
-
-        lib_dir = path.join(self.install_lib, "cocotb", "libs")
-        if not path.exists(lib_dir):
-            makedirs(lib_dir)
-
-        build(build_dir=lib_dir)
-
-class PostInstallCommandDev(develop):
-    """Post-installation for develop mode."""
-
-    def run(self):
-        develop.run(self)
-
-        lib_dir = path.join(self.egg_path, "cocotb", "libs")
-        if not path.exists(lib_dir):
-            makedirs(lib_dir)
-
-        build(build_dir=lib_dir, debug=True)
+from cocotb.build_libs import get_ext
+from cocotb.build_libs import build_ext
 
 def read_file(fname):
     return open(path.join(path.dirname(__file__), fname)).read()
@@ -72,25 +47,9 @@ def package_files(directory):
 # this sets the __version__ variable
 exec(read_file(path.join('cocotb', '_version.py')))
 
-# force platform-specific wheel (root_is_pure=False means "not pure Python", i.e. has C libs)
-try:
-    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-
-    class bdist_wheel(_bdist_wheel):
-        def finalize_options(self):
-            _bdist_wheel.finalize_options(self)
-            self.root_is_pure = False
-
-except ImportError:
-    bdist_wheel = None
-
 setup(
     name='cocotb',
-        cmdclass={
-        "install": PostInstallCommand,
-        "develop": PostInstallCommandDev,
-        "bdist_wheel": bdist_wheel,
-    },
+    cmdclass={'build_ext': build_ext},
     version=__version__,  # noqa: F821
     description='cocotb is a coroutine based cosimulation library for writing VHDL and Verilog testbenches in Python.',
     url='https://github.com/cocotb/cocotb',
@@ -102,8 +61,8 @@ setup(
     install_requires=[],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     packages=find_packages(),
-    include_package_data=True,
     package_data={'cocotb': package_files('cocotb/share')},
+    ext_modules=get_ext(),
     entry_points={
         'console_scripts': [
             'cocotb-config=cocotb.config:main',
