@@ -30,7 +30,7 @@
 
 from setuptools import setup
 from setuptools import find_packages
-from os import path, walk, makedirs
+from os import path, walk
 from cocotb.build_libs import get_ext
 from cocotb.build_libs import build_ext
 

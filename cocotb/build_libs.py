@@ -22,7 +22,7 @@ class build_ext(_build_ext):
 
     # For proper library name, based on https://github.com/cython/cython/issues/1740
     def get_ext_filename(self, ext_name):
-        filename = super().get_ext_filename(ext_name)
+        filename = _build_ext.get_ext_filename(self, ext_name)
 
         filename_short = self.get_ext_filename_without_platform_suffix(filename)
 
