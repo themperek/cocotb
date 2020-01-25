@@ -40,6 +40,7 @@ class build_ext(_build_ext):
         # icarus requires vpl extension
         if filename.find("icarus") >= 0:
             filename_short = filename_short.replace("libvpi.so", "gpivpi.vpl")
+            filename_short = filename_short.replace("libvpi.dll", "gpivpi.vpl")
 
         return filename_short
 
