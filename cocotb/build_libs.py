@@ -225,7 +225,7 @@ def get_ext():
     ext = []
 
     logger.info("Compiling interface libraries for cocotb ...")
-    
+
     #
     #  Icarus Verilog
     #
