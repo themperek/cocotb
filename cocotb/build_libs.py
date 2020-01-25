@@ -224,14 +224,15 @@ def get_ext():
 
     ext = []
 
-    logger.warning("Compiling interface libraries for cocotb ...")
-
+    logger.info("Compiling interface libraries for cocotb ...")
+    
     #
     #  Icarus Verilog
     #
     icarus_compile = True
     icarus_extra_lib = []
     icarus_extra_lib_path = []
+    logger.info("Compiling libraries for Icarus Verilog")
     if os.name == "nt":
         iverilog_path = find_executable("iverilog")
         if iverilog_path is None:
@@ -263,6 +264,7 @@ def get_ext():
     modelsim_compile = True
     modelsim_extra_lib = []
     modelsim_extra_lib_path = []
+    logger.info("Compiling libraries for Modelsim/Questa")
     if os.name == "nt":
         if vsim_path is None:
             logger.warning(
@@ -318,6 +320,7 @@ def get_ext():
     # GHDL
     #
     if os.name == "posix":
+        logger.info("Compiling libraries for GHDL")
         ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="GHDL")
         ghdl_vpi_ext = _get_vpi_lib_ext(
             include_dir=include_dir, share_lib_dir=share_lib_dir, sim_define="GHDL"
@@ -328,6 +331,7 @@ def get_ext():
     # IUS
     #
     if os.name == "posix":
+        logger.info("Compiling libraries for Incisive/Xcelium")
         ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="IUS")
         ius_vpi_ext = _get_vpi_lib_ext(
             include_dir=include_dir, share_lib_dir=share_lib_dir, sim_define="IUS"
@@ -343,6 +347,7 @@ def get_ext():
     # VCS
     #
     if os.name == "posix":
+        logger.info("Compiling libraries for VCS")
         ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="VCS")
         vcs_vpi_ext = _get_vpi_lib_ext(
             include_dir=include_dir, share_lib_dir=share_lib_dir, sim_define="VCS"
@@ -353,6 +358,7 @@ def get_ext():
     # Aldec
     #
     vsimsa_path = find_executable("vsimsa")
+    logger.info("Compiling libraries for Riviera")
     if vsimsa_path is None:
         logger.warning(
             "Riviera executable (vsimsa) not found. No VPI/VHPI interface will be available."
@@ -385,6 +391,7 @@ def get_ext():
     # Verilator
     #
     if os.name == "posix":
+        logger.info("Compiling libraries for Verilator")
         ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="VERILATOR")
         verilator_vpi_ext = _get_vpi_lib_ext(
             include_dir=include_dir, share_lib_dir=share_lib_dir, sim_define="VERILATOR"

@@ -28,10 +28,12 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
+import logging
 from setuptools import setup
 from setuptools import find_packages
 from os import path, walk
 from cocotb.build_libs import get_ext ,build_ext
+from io import StringIO
 
 def read_file(fname):
     return open(path.join(path.dirname(__file__), fname)).read()
@@ -45,6 +47,14 @@ def package_files(directory):
 
 # this sets the __version__ variable
 exec(read_file(path.join('cocotb', '_version.py')))
+
+# store log form build_libs and display at the end in verbose mode
+# see https://github.com/pypa/pip/issues/6634
+log_stream = StringIO()
+handler = logging.StreamHandler(log_stream)
+log = logging.getLogger("cocotb.build_libs")
+log.setLevel(logging.INFO)
+log.addHandler(handler)
 
 setup(
     name='cocotb',
@@ -75,3 +85,5 @@ setup(
         "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
     ],
 )
+
+print(log_stream.getvalue())
