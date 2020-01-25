@@ -14,38 +14,34 @@ from setuptools.command.build_ext import build_ext as _build_ext
 from distutils.file_util import copy_file
 
 
+logger = logging.getLogger(__name__)
+
+
 class build_ext(_build_ext):
 
     # Needed for Windows to not assume python module (generate interface in def file)
     def get_export_symbols(self, ext):
         return None
 
-    # For proper library name, based on https://github.com/cython/cython/issues/1740
+    # For proper cocotb library nameing, based on https://github.com/cython/cython/issues/1740
     def get_ext_filename(self, ext_name):
         filename = _build_ext.get_ext_filename(self, ext_name)
 
-        filename_short = self.get_ext_filename_without_platform_suffix(filename)
+        head, tail = os.path.split(filename)
+        tail_split = tail.split(".")
+
+        if os.name == "nt":
+            ext_name = "dll"
+        else:
+            ext_name = "so"
+
+        filename_short = os.path.join(head, tail_split[0] + "." + ext_name)
 
         # icarus requires vpl extension
         if filename.find("icarus") >= 0:
             filename_short = filename_short.replace("libvpi.so", "gpivpi.vpl")
 
         return filename_short
-
-    def get_ext_filename_without_platform_suffix(self, filename):
-        name, ext = os.path.splitext(filename)
-        ext_suffix = sysconfig.get_config_var("EXT_SUFFIX")
-
-        if ext_suffix == ext:
-            return filename
-
-        ext_suffix = ext_suffix.replace(ext, "")
-        idx = name.find(ext_suffix)
-
-        if idx == -1:
-            return filename
-        else:
-            return name[:idx] + ext
 
     # Add extra library_dirs path
     def finalize_options(self):
@@ -56,7 +52,7 @@ class build_ext(_build_ext):
                 os.path.join(self.build_lib, os.path.dirname(ext._full_name))
             )
 
-    # copyt libs into proper direcotry in develop
+    # copy libs into proper direcotry in develop
     def copy_extensions_to_source(self):
         build_py = self.get_finalized_command("build_py")
         for ext in self.extensions:
@@ -212,8 +208,6 @@ def _get_vhpi_lib_ext(
 
 
 def get_ext():
-
-    logger = logging.getLogger(__name__)
 
     cfg_vars = distutils.sysconfig.get_config_vars()
     for key, value in cfg_vars.items():

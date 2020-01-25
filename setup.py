@@ -31,8 +31,7 @@
 from setuptools import setup
 from setuptools import find_packages
 from os import path, walk
-from cocotb.build_libs import get_ext
-from cocotb.build_libs import build_ext
+from cocotb.build_libs import get_ext ,build_ext
 
 def read_file(fname):
     return open(path.join(path.dirname(__file__), fname)).read()
