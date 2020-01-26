@@ -100,7 +100,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir, sim_define):
     if os.name == "nt":
         ext_name = "dll"
         python_lib = python_lib_link + "." + ext_name
-    else if sys.platform == "darwin":
+    elif sys.platform == "darwin":
         ext_name = "so"
         python_lib = "lib" + python_lib_link + ".dylib"
     else:
