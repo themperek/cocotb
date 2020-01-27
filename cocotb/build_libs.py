@@ -102,7 +102,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir, sim_define):
         python_lib = python_lib_link + "." + ext_name
     elif sys.platform == "darwin":
         ext_name = "so"
-        python_lib = "lib" + python_lib_link + ".dylib"
+        python_lib = sysconfig.get_config_var("LDLIBRARY")
     else:
         ext_name = "so"
         python_lib = "lib" + python_lib_link + "." + ext_name
