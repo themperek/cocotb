@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 def _get_lib_ext_name():
-    """ Get the name of default library file extension on given os """
+    """ Get name of default library file extension on given OS. """
 
     if os.name == "nt":
         ext_name = "dll"
@@ -75,6 +75,7 @@ class build_ext(_build_ext):
             modpath = fullname.split(".")
             package = ".".join(modpath[:-1])
             package_dir = build_py.get_package_dir(package)
+            # unlike the method from `setuptools`, we do not call `os.path.basename` here
             dest_filename = os.path.join(package_dir, filename)
             src_filename = os.path.join(self.build_lib, filename)
 
