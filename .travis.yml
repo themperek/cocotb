@@ -84,7 +84,7 @@ jobs:
 
         - powershell "pip install tox"
       script:
-        - tox -e py3
+        - powershell "tox -e py3"
 
     - stage: SimTests
       os: osx
