@@ -29,6 +29,8 @@
 
 # All common python related rules
 
+SHELL:=bash
+
 # if not explicitly set, auto-detect python dir from system path
 ifeq ($(PYTHON_DIR),)
     PYTHON_DIR ?= $(shell dirname $(shell :; command -v python))
