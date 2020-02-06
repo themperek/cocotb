@@ -131,8 +131,8 @@ _base_warns = ["-Wall", "-Wextra", "-Wcast-qual", "-Wwrite-strings"]
 _cc_warns = _base_warns + ["-Wstrict-prototypes", "-Waggregate-return"]
 _ccx_warns = _base_warns + ["-Wnon-virtual-dtor", "-Woverloaded-virtual"]
 
-_extra_cc_compile_args = ["-std=gnu99"] # + _cc_warns
-_extra_cxx_compile_args = ["-std=c++11"] # + _ccx_warns
+_extra_cc_compile_args = [] #["-std=gnu99"] # + _cc_warns
+_extra_cxx_compile_args = [] #["-std=c++11"] # + _ccx_warns
 
 # We need to build common libraries for each simulator to avoid issues with
 # loading libraries from different directories in multi os configuration and
