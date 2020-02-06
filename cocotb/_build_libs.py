@@ -45,6 +45,9 @@ class build_ext(_build_ext):
 
         filename = _build_ext.get_ext_filename(self, ext_name)
 
+        if "simulator" in filename:
+            return filename
+
         head, tail = os.path.split(filename)
         tail_split = tail.split(".")
 
@@ -334,7 +337,8 @@ def get_ext():
     else:
         modelsim_dir = os.path.dirname(os.path.dirname(vsim_path))
         modelsim_include_dir = os.path.join(modelsim_dir, "include")
-        if os.path.isfile(os.path.join(modelsim_include_dir, "mti.h")):
+        mti_path = os.path.join(modelsim_include_dir, "mti.h")
+        if os.path.isfile(mti_path):
             fli_ext = Extension(
                 os.path.join("cocotb", "libs", "modelsim", "libfli"),
                 include_dirs=[include_dir, modelsim_include_dir],
