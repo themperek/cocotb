@@ -83,11 +83,11 @@ jobs:
         - powershell "$CONDA_PATH; conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython"
         #- powershell "$CONDA_PATH; conda install --yes virtualenv"
 
-        - echo [build]$'\n'compiler=mingw32$'\n'$'\n'[build_ext]$'\n'compiler=mingw32 > C:\miniconda3\Lib\distutils\distutils.cfg
-        - cat C:\miniconda3\Lib\distutils\distutils.cfg
+        #- echo [build]$'\n'compiler=mingw32$'\n'$'\n'[build_ext]$'\n'compiler=mingw32 > C:\miniconda3\Lib\distutils\distutils.cfg
+        #- cat C:\miniconda3\Lib\distutils\distutils.cfg
         #- powershell "$CONDA_PATH; pip install --global-option build_ext --global-option --compiler=mingw32 -v ."
-        - powershell "$CONDA_PATH; pip install -v ."
-        - powershell "$CONDA_PATH; make test"
+        #- powershell "$CONDA_PATH; pip install -v ."
+        #- powershell "$CONDA_PATH; make test"
         - powershell "$CONDA_PATH; pip install tox"
       script:
         - powershell "$CONDA_PATH; tox -e pyw3"
