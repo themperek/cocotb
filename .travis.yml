@@ -83,7 +83,7 @@ jobs:
         - powershell "$CONDA_PATH; conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython"
         - echo [build]$'\n'compiler=mingw32$'\n'$'\n'[build_ext]$'\n'compiler=mingw32 > C:\miniconda3\Lib\distutils\distutils.cfg
         - cat C:\miniconda3\Lib\distutils\distutils.cfg
-        - powershell "$CONDA_PATH; pip install --build-option='--compiler=mingw32' -v ."
+        - powershell "$CONDA_PATH; pip install --global-option build_ext --global-option --compiler=mingw32 -v ."
         - powershell "$CONDA_PATH; pip install -f -v ."
         - powershell "$CONDA_PATH; pip install tox"
       script:
