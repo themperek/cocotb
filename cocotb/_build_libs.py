@@ -35,7 +35,6 @@ class build_ext(_build_ext):
         return None
 
     # For proper cocotb library nameing, based on https://github.com/cython/cython/issues/1740
-    # TODO: for the simulator python library, we should be leaving this suffix in place
     def get_ext_filename(self, ext_name):
         """
         Like the base class method, but removes the ``.cpython-36m-x86_64-linux-gnu.`` part before the extension.
@@ -45,7 +44,8 @@ class build_ext(_build_ext):
 
         filename = _build_ext.get_ext_filename(self, ext_name)
 
-        if "simulator" in filename:
+        #for the simulator python library, leaving suffix in place
+        if "simulator" == os.path.split(ext_name)[-1]:
             return filename
 
         head, tail = os.path.split(filename)
