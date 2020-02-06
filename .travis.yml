@@ -90,7 +90,7 @@ jobs:
         - powershell "$CONDA_PATH; make test"
         - powershell "$CONDA_PATH; pip install tox"
       script:
-        - powershell "$CONDA_PATH; tox -e py3"
+        - powershell "$CONDA_PATH; tox -e pyw3"
 
     - stage: SimTests
       os: osx
