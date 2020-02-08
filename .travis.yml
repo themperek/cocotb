@@ -85,6 +85,8 @@ jobs:
 
         - pip install tox
         - pip install -v .
+        - bash -c "command -v python"
+        - bash -c "command -v iverilog"
         - PATH=/c/Users/themperek/Miniconda3/Library/bin:$PATH make test
       script:
         - tox -e py3
