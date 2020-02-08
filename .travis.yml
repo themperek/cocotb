@@ -84,6 +84,8 @@ jobs:
         - conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython
 
         - pip install tox
+        - pip install -v .
+        - make test
       script:
         - tox -e py3
 
