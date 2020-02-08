@@ -85,7 +85,7 @@ jobs:
 
         - pip install tox
         - pip install -v .
-        - make test
+        - PATH=/c/Users/themperek/Miniconda3/Library/bin:$PATH make test
       script:
         - tox -e py3
 
