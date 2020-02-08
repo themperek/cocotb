@@ -82,12 +82,13 @@ jobs:
 
         - export "PATH=$PATH:/C/miniconda3:/C/miniconda3/Library/mingw-w64/bin:/C/miniconda3/Library/usr/bin:/C/miniconda3/Library/bin:/C/miniconda3/Scripts:/C/miniconda3/bin:/C/miniconda3/condabin:/C/iverilog/bin"
         - conda install --yes -c msys2 m2-base m2-make m2w64-toolchain libpython
-
-        - pip install tox
-        - pip install -v .
+        
+        - pip install .
         - bash -c "command -v python"
         - bash -c "command -v iverilog"
         - PATH=/c/Users/themperek/Miniconda3/Library/bin:$PATH make test
+        
+        - pip install tox
       script:
         - tox -e py3
 
