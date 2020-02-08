@@ -29,6 +29,8 @@
 
 # Common makefile included by everything
 
+SHELL:=bash
+
 # Directory containing the cocotb Python module
 ifeq ($(COCOTB_PY_DIR),)
 export COCOTB_PY_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
