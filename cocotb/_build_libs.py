@@ -155,15 +155,14 @@ def _get_common_lib_ext(include_dir, share_lib_dir, sim_define):
     #
     #  libgpilog
     #
-    python_lib_dirs = []
-    if sys.platform == "darwin":
-        python_lib_dirs = [sysconfig.get_config_var("LIBDIR")]
+    #python_lib_dirs = []
+    #if sys.platform == "darwin":
+    #    python_lib_dirs = [sysconfig.get_config_var("LIBDIR")]
 
     libgpilog = Extension(
         os.path.join("cocotb", "libs", sim_define.lower(), "libgpilog"),
         include_dirs=[include_dir],
-        libraries=[_get_python_lib_link(), "cocotbutils"],
-        library_dirs=python_lib_dirs,
+        libraries=["cocotbutils"],
         sources=[os.path.join(share_lib_dir, "gpi_log", "gpi_logging.c")],
         extra_link_args=_extra_link_args("libgpilog"),
         extra_compile_args=_extra_cc_compile_args,
@@ -176,8 +175,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir, sim_define):
         os.path.join("cocotb", "libs", sim_define.lower(), "libcocotb"),
         define_macros=[("PYTHON_SO_LIB", _get_python_lib())],
         include_dirs=[include_dir],
-        libraries=[_get_python_lib_link(), "gpilog", "cocotbutils"],
-        library_dirs=python_lib_dirs,
+        libraries=["gpilog", "cocotbutils"],
         sources=[os.path.join(share_lib_dir, "embed", "gpi_embed.c")],
         extra_link_args=_extra_link_args("libcocotb"),
         extra_compile_args=_extra_cc_compile_args,
@@ -205,8 +203,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir, sim_define):
     libsim = Extension(
         os.path.join("cocotb", "libs", sim_define.lower(), "simulator"),
         include_dirs=[include_dir],
-        libraries=[_get_python_lib_link(), "cocotbutils", "gpilog", "gpi"],
-        library_dirs=python_lib_dirs,
+        libraries=["cocotbutils", "gpilog", "gpi"],
         sources=[os.path.join(share_lib_dir, "simulator", "simulatormodule.c")],
         extra_compile_args=_extra_cc_compile_args,
     )
