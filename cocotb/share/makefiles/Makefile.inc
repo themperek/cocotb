@@ -29,6 +29,9 @@
 
 # Common makefile included by everything
 
+# We use bash specific commands like: "command", "set -o pipefail"
+SHELL=bash
+
 # Directory containing the cocotb Python module
 ifeq ($(COCOTB_PY_DIR),)
 export COCOTB_PY_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
