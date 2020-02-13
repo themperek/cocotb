@@ -264,7 +264,7 @@ def get_ext():
 
     share_dir = os.path.relpath(os.path.join(os.path.dirname(__file__), "share"))
     share_lib_dir = os.path.relpath(os.path.join(share_dir, "lib"))
-    share_def_dir = os.path.relpath(os.path.join(share_dir, "def"))
+    share_def_dir = os.path.abspath(os.path.join(share_dir, "def"))
     include_dir = os.path.relpath(os.path.join(share_dir, "include"))
 
     if os.name == "nt":
