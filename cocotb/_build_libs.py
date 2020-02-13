@@ -7,6 +7,7 @@ import sys
 import sysconfig
 import logging
 import distutils
+import subprocess
 
 from setuptools import Extension
 from distutils.spawn import find_executable
@@ -263,7 +264,11 @@ def get_ext():
 
     share_dir = os.path.relpath(os.path.join(os.path.dirname(__file__), "share"))
     share_lib_dir = os.path.relpath(os.path.join(share_dir, "lib"))
+    share_def_dir = os.path.relpath(os.path.join(share_dir, "def"))
     include_dir = os.path.relpath(os.path.join(share_dir, "include"))
+
+    if os.name == "nt":
+        subprocess.run("dlltool", "-d", os.path.join(share_def_dir, "icarus.def"), "-l", os.path.join(share_def_dir, "libicarus.a"))
 
     ext = []
 
@@ -277,16 +282,8 @@ def get_ext():
     icarus_extra_lib_path = []
     logger.info("Compiling libraries for Icarus Verilog")
     if os.name == "nt":
-        iverilog_path = find_executable("iverilog")
-        if iverilog_path is None:
-            logger.warning(
-                "Icarus Verilog executable not found. No VPI interface will be available."
-            )
-            icarus_compile = False
-        else:
-            icarus_path = os.path.dirname(os.path.dirname(iverilog_path))
-            icarus_extra_lib = ["vpi"]
-            icarus_extra_lib_path = [os.path.join(icarus_path, "lib")]
+        icarus_extra_lib = ["icarus"]
+        icarus_extra_lib_path = [os.path.join(share_def_dir, "def")]
 
     if icarus_compile:
         ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="ICARUS")
