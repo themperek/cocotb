@@ -277,57 +277,44 @@ def get_ext():
     #
     #  Icarus Verilog
     #
-    icarus_compile = True
     icarus_extra_lib = []
     icarus_extra_lib_path = []
     logger.info("Compiling libraries for Icarus Verilog")
     if os.name == "nt":
         icarus_extra_lib = ["icarus"]
-        icarus_extra_lib_path = [os.path.join(share_def_dir, "def")]
+        icarus_extra_lib_path = [share_def_dir]
 
-    if icarus_compile:
-        ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="ICARUS")
-        icarus_vpi_ext = _get_vpi_lib_ext(
-            include_dir=include_dir,
-            share_lib_dir=share_lib_dir,
-            sim_define="ICARUS",
-            extra_lib=icarus_extra_lib,
-            extra_lib_dir=icarus_extra_lib_path,
-        )
-
-        ext.append(icarus_vpi_ext)
+    ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="ICARUS")
+    icarus_vpi_ext = _get_vpi_lib_ext(
+        include_dir=include_dir,
+        share_lib_dir=share_lib_dir,
+        sim_define="ICARUS",
+        extra_lib=icarus_extra_lib,
+        extra_lib_dir=icarus_extra_lib_path,
+    )
+    ext.append(icarus_vpi_ext)
 
     #
     #  Modelsim/Questa
     #
-    vsim_path = find_executable("vdbg")
-    modelsim_compile = True
     modelsim_extra_lib = []
     modelsim_extra_lib_path = []
     logger.info("Compiling libraries for Modelsim/Questa")
     if os.name == "nt":
-        if vsim_path is None:
-            logger.warning(
-                "Modelsim/Questa executable (vdbg) not found. No VPI interface will be available."
-            )
-            modelsim_compile = False
-        else:
-            modelsim_bin_dir = os.path.dirname(vsim_path)
-            modelsim_extra_lib = ["mtipli"]
-            modelsim_extra_lib_path = [modelsim_bin_dir]
+        modelsim_extra_lib = ["modelsim"]
+        modelsim_extra_lib_path = [share_def_dir]
 
-    if modelsim_compile:
-        ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="MODELSIM")
-        modelsim_vpi_ext = _get_vpi_lib_ext(
-            include_dir=include_dir,
-            share_lib_dir=share_lib_dir,
-            sim_define="MODELSIM",
-            extra_lib=modelsim_extra_lib,
-            extra_lib_dir=modelsim_extra_lib_path,
-        )
+    ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="MODELSIM")
+    modelsim_vpi_ext = _get_vpi_lib_ext(
+        include_dir=include_dir,
+        share_lib_dir=share_lib_dir,
+        sim_define="MODELSIM",
+        extra_lib=modelsim_extra_lib,
+        extra_lib_dir=modelsim_extra_lib_path,
+    )
+    ext.append(modelsim_vpi_ext)
 
-        ext.append(modelsim_vpi_ext)
-
+    vsim_path = find_executable("vdbg")
     if vsim_path is None:
         logger.warning(
             "Modelsim/Questa executable (vdbg) executable not found. No FLI interface will be available."
@@ -401,35 +388,31 @@ def get_ext():
     #
     # Aldec
     #
-    vsimsa_path = find_executable("vsimsa")
+    aldec_extra_lib = []
+    aldec_extra_lib_path = []
     logger.info("Compiling libraries for Riviera")
-    if vsimsa_path is None:
-        logger.warning(
-            "Riviera executable (vsimsa) not found. No VPI/VHPI interface will be available."
-        )
-    else:
-        ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="ALDEC")
-        aldec_path = os.path.dirname(vsimsa_path)
-        aldec_extra_lib = ["aldecpli"]
-        aldec_extra_lib_path = [aldec_path]
+    if os.name == "nt":
+        aldec_extra_lib = ["aldec"]
+        aldec_extra_lib_path = [share_def_dir]
 
-        aldec_vpi_ext = _get_vpi_lib_ext(
-            include_dir=include_dir,
-            share_lib_dir=share_lib_dir,
-            sim_define="ALDEC",
-            extra_lib=aldec_extra_lib,
-            extra_lib_dir=aldec_extra_lib_path,
-        )
-        ext.append(aldec_vpi_ext)
+    ext += _get_common_lib_ext(include_dir, share_lib_dir, sim_define="ALDEC")
+    aldec_vpi_ext = _get_vpi_lib_ext(
+        include_dir=include_dir,
+        share_lib_dir=share_lib_dir,
+        sim_define="ALDEC",
+        extra_lib=aldec_extra_lib,
+        extra_lib_dir=aldec_extra_lib_path,
+    )
+    ext.append(aldec_vpi_ext)
 
-        aldec_vhpi_ext = _get_vhpi_lib_ext(
-            include_dir=include_dir,
-            share_lib_dir=share_lib_dir,
-            sim_define="ALDEC",
-            extra_lib=aldec_extra_lib,
-            extra_lib_dir=aldec_extra_lib_path,
-        )
-        ext.append(aldec_vhpi_ext)
+    aldec_vhpi_ext = _get_vhpi_lib_ext(
+        include_dir=include_dir,
+        share_lib_dir=share_lib_dir,
+        sim_define="ALDEC",
+        extra_lib=aldec_extra_lib,
+        extra_lib_dir=aldec_extra_lib_path,
+    )
+    ext.append(aldec_vhpi_ext)
 
     #
     # Verilator
