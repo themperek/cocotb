@@ -127,6 +127,24 @@ def _get_python_lib():
 
     return python_lib
 
+
+# On Windows we generate import libraries that contains the code required to
+# load the DLL (.a) based on module definition files (.def)
+def _gen_import_libs(def_dir):
+
+    if os.name == "nt":
+        for sim in ["icarus", "modelsim", "aldec"]:
+            subprocess.run(
+                [
+                    "dlltool",
+                    "-d",
+                    os.path.join(def_dir, sim + ".def"),
+                    "-l",
+                    os.path.join(def_dir, "lib" + sim + ".a"),
+                ]
+            )
+
+
 # TODO [gh-1372]: make this work for MSVC which has a different flag syntax
 # TODO Add "-Wconversion" to _base_warns when fixed
 _base_warns = ["-Wall", "-Wextra", "-Wcast-qual", "-Wwrite-strings"]
@@ -267,9 +285,7 @@ def get_ext():
     share_def_dir = os.path.abspath(os.path.join(share_dir, "def"))
     include_dir = os.path.relpath(os.path.join(share_dir, "include"))
 
-    if os.name == "nt":
-        for sim in ["icarus", "modelsim", "aldec"]:
-            subprocess.run(["dlltool", "-d", os.path.join(share_def_dir, sim + ".def"), "-l", os.path.join(share_def_dir, "lib"+sim+".a")])
+    _gen_import_libs(share_def_dir)
 
     ext = []
 
@@ -344,8 +360,9 @@ def get_ext():
         else:
             logger.warning(
                 "Cannot build FLI interface for Modelsim/Questa - "
-                "the mti.h header for '{}' was not found at '{}'."
-                .format(vsim_path, mti_path)
+                "the mti.h header for '{}' was not found at '{}'.".format(
+                    vsim_path, mti_path
+                )
             )  # some Modelsim version does not include FLI.
 
     #
