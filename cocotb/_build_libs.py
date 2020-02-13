@@ -268,7 +268,8 @@ def get_ext():
     include_dir = os.path.relpath(os.path.join(share_dir, "include"))
 
     if os.name == "nt":
-        subprocess.run("dlltool", "-d", os.path.join(share_def_dir, "icarus.def"), "-l", os.path.join(share_def_dir, "libicarus.a"))
+        for sim in ["icarus", "modelsim", "aldec"]:
+            subprocess.run(["dlltool", "-d", os.path.join(share_def_dir, sim + ".def"), "-l", os.path.join(share_def_dir, "lib"+sim+".a")])
 
     ext = []
 
