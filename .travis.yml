@@ -17,7 +17,9 @@ jobs:
     - stage: Lint
       name: whitespace
       os: linux
-      script: "[[ -z \"$(git ls-files | xargs egrep -l '\\s+$')\" ]]"
+      script: 
+        - git ls-files | xargs egrep -l '\s+$'
+        - "[[ -z \"$(git ls-files | xargs egrep -l '\\s+$')\" ]]"
 
     - stage: Lint
       name: flake8
