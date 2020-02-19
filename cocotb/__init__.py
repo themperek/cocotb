@@ -38,6 +38,9 @@ import random
 import time
 import warnings
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "libs"))
+sys.path.append(os.getcwd())
+
 import cocotb.handle
 import cocotb.log
 from cocotb.scheduler import Scheduler

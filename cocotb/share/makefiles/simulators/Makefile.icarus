@@ -49,10 +49,7 @@ ifeq (, $(CMD))
     $(error "Unable to locate command >$(CMD_BIN)<")
 else
     ICARUS_BIN_DIR := $(shell dirname $(CMD))
-    export ICARUS_BIN_DIR
 endif
-
-BUILD_VPI=1
 
 COMPILE_ARGS += -g2012 # Default to latest SystemVerilog standard
 
@@ -61,22 +58,10 @@ $(SIM_BUILD)/sim.vvp: $(SIM_BUILD) $(VERILOG_SOURCES) $(CUSTOM_COMPILE_DEPS)
 	$(CMD) -o $(SIM_BUILD)/sim.vvp -D COCOTB_SIM=1 -s $(TOPLEVEL) $(COMPILE_ARGS) $(EXTRA_ARGS) $(VERILOG_SOURCES)
 
 # Execution phase
-
-ifeq ($(OS),Msys)
-
-OLD_PATH := $(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
-LIB_LOAD = PATH=$(OLD_PATH):$(LIB_DIR):$(LIB_DIR)/icarus
-NEW_PYTHONPATH:=$(shell python -c "import sys, os; print(':'.join(['/'+dir.replace(os.sep,'/').replace(':','') for dir in sys.path]))")
-
-else
-NEW_PYTHONPATH := $(PYTHONPATH)
-endif
-
 $(COCOTB_RESULTS_FILE): $(SIM_BUILD)/sim.vvp $(CUSTOM_SIM_DEPS) $(COCOTB_LIBS) $(COCOTB_VPI_LIB)
 	-@rm -f $(COCOTB_RESULTS_FILE)
 
-	PYTHONPATH=$(LIB_DIR):$(PWD):$(NEW_PYTHONPATH) $(LIB_LOAD) MODULE=$(MODULE) \
-        TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) TOPLEVEL_LANG=$(TOPLEVEL_LANG) COCOTB_SIM=1 \
+	$(EXTRA_ENV) MODULE=$(MODULE) TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) TOPLEVEL_LANG=$(TOPLEVEL_LANG) COCOTB_SIM=1 \
         $(ICARUS_BIN_DIR)/vvp -M $(LIB_DIR)/icarus -m libcocotbvpi $(SIM_BUILD)/sim.vvp $(SIM_ARGS) $(EXTRA_ARGS) $(PLUSARGS)
 
 	# check that the file was actually created, since we can't set an exit code from cocotb
@@ -85,8 +70,7 @@ $(COCOTB_RESULTS_FILE): $(SIM_BUILD)/sim.vvp $(CUSTOM_SIM_DEPS) $(COCOTB_LIBS) $
 debug: $(SIM_BUILD)/sim.vvp $(CUSTOM_SIM_DEPS) $(COCOTB_LIBS)
 	-@rm -f $(COCOTB_RESULTS_FILE)
 
-	PYTHONPATH=$(LIB_DIR):$(PWD):$(NEW_PYTHONPATH) $(LIB_LOAD) MODULE=$(MODULE) \
-        TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) TOPLEVEL_LANG=$(TOPLEVEL_LANG) COCOTB_SIM=1 \
+	$(EXTRA_ENV) MODULE=$(MODULE) TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) TOPLEVEL_LANG=$(TOPLEVEL_LANG) COCOTB_SIM=1 \
         gdb --args $(ICARUS_BIN_DIR)/vvp -M $(LIB_DIR)/icarus -m libcocotbvpi $(SIM_BUILD)/sim.vvp $(SIM_ARGS) $(EXTRA_ARGS) $(PLUSARGS)
 
 	# check that the file was actually created, since we can't set an exit code from cocotb

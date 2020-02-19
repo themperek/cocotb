@@ -41,6 +41,8 @@ WPWD=$(shell pwd)
 PYTHONPATH := $(PWD)/../cosim:$(PYTHONPATH)
 endif
 
+export PYTHONPATH
+
 ifeq ($(TOPLEVEL_LANG),verilog)
     VERILOG_SOURCES = $(WPWD)/../hdl/endian_swapper.sv
     TOPLEVEL = endian_swapper_sv

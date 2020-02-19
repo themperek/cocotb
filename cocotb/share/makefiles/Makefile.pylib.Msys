@@ -47,3 +47,6 @@ ifeq ($(PYTHON_LIBDIR),None)
 endif
 
 PYTHON_INCLUDEDIR := $(shell $(PYTHON_BIN) -c 'import distutils.sysconfig; print( distutils.sysconfig.get_python_inc() )')
+
+ORG_PATH := $(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
+EXTRA_ENV = PATH=$(OLD_PATH):$(LIB_DIR):$(LIB_DIR)/$(SIM_LOWERCASE)
