@@ -82,7 +82,7 @@ endif
 
 GPI_EXTRA:=
 ifeq ($(TOPLEVEL_LANG),verilog)
-    GPI_ARGS = -pli $(LIB_DIR)/libcocotbvpi
+    GPI_ARGS = -pli $(LIB_DIR)/aldec/libcocotbvpi
 ifneq ($(VHDL_SOURCES),)
     GPI_EXTRA = cocotbvhpi
 endif
@@ -90,9 +90,9 @@ endif
 else ifeq ($(TOPLEVEL_LANG),vhdl)
 
 ifeq ($(OS),Msys)
-    VHPI_LIB = $(shell sh -c 'cd $(LIB_DIR) && pwd -W')/libcocotbvhpi
+    VHPI_LIB = $(shell sh -c 'cd $(LIB_DIR) && pwd -W')/aldec/libcocotbvhpi
 else
-    VHPI_LIB = $(LIB_DIR)/libcocotbvhpi
+    VHPI_LIB = $(LIB_DIR)/aldec/libcocotbvhpi
 endif
 
     GPI_ARGS = -loadvhpi $(VHPI_LIB):vhpi_startup_routines_bootstrap
@@ -158,7 +158,6 @@ OLD_PATH := $(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/
 LIB_LOAD = PATH=$(MINGW_BIN_DIR):$(OLD_PATH):$(LIB_DIR)
 NEW_PYTHONPATH := $(shell echo "$(PYTHONPATH)" | sed -e 's/\\/\//g' -e 's/\([a-zA-Z]\):\//\/\1\//g' -e 's/;/:/g')
 else
-LIB_LOAD := LD_LIBRARY_PATH=$(LIB_DIR):$(LD_LIBRARY_PATH)
 NEW_PYTHONPATH := $(PYTHONPATH)
 endif
 
