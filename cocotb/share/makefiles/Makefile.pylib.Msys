@@ -51,5 +51,5 @@ PYTHON_INCLUDEDIR := $(shell $(PYTHON_BIN) -c 'import distutils.sysconfig; print
 PYTHONHOME:=$(shell $(PYTHON_BIN) -c 'from distutils import sysconfig; print( sysconfig.get_config_var("prefix") )')
 export PYTHONHOME
 
-ORG_PATH := $(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
-EXTRA_ENV = PATH=$(ORG_PATH):$(LIB_DIR):$(LIB_DIR)/$(SIM_LOWERCASE)
+ORG_PATH:=$(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
+PYTHONPATH=PYTHONPATH=$(PYTHONPATH) PATH=$(ORG_PATH):$(LIB_DIR):$(LIB_DIR)/$(SIM_LOWERCASE)
