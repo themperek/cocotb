@@ -48,8 +48,16 @@ endif
 
 PYTHON_INCLUDEDIR := $(shell $(PYTHON_BIN) -c 'import distutils.sysconfig; print( distutils.sysconfig.get_python_inc() )')
 
-PYTHONHOME:=$(shell $(PYTHON_BIN) -c 'from distutils import sysconfig; print( sysconfig.get_config_var("prefix") )')
-export PYTHONHOME
+ifdef LIB_DIR
 
-ORG_PATH:=$(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
-PYTHONPATH=PYTHONPATH=$(PYTHONPATH) PATH:=$(ORG_PATH):$(LIB_DIR):$(LIB_DIR)/$(SIM_LOWERCASE)
+    LIB_DIR_UNIX:=$(shell cygpath -u $(LIB_DIR))
+	
+    # Need to set PATH to LIB_DIR to find libraries (no rpath on Windows)
+    export PATH:=$(LIB_DIR_UNIX)/$(SIM_LOWERCASE):$(LIB_DIR_UNIX):$(PATH)
+
+    # Add PYTHONHOME to populate sys.path
+    PYTHONHOME:=$(shell cygpath -m $(shell $(PYTHON_BIN) -c 'from distutils import sysconfig; print( sysconfig.get_config_var("prefix") )'))
+    PYTHONPATH:=$(PYTHONPATH) PYTHONHOME=$(PYTHONHOME)
+
+endif
+

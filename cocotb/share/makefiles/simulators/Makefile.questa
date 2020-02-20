@@ -67,7 +67,6 @@ CMD += -c
 VSIM_ARGS += -onfinish exit
 endif
 
-GPI_EXTRA:=
 ifeq ($(TOPLEVEL_LANG),vhdl)
     VSIM_ARGS += -foreign \"cocotb_init $(LIB_DIR)/modelsim/libfli.$(LIB_EXT)\"
 ifneq ($(VERILOG_SOURCES),)
@@ -114,44 +113,19 @@ else
 	@echo "quit" >> $@
 endif
 
-ifeq ($(OS),Msys)
-
-# Windows allows the situation where the libstc++ used at link time as
-# specified by -L can be different to the one that is used at runtime which
-# comes from the first libstdc++ that it finds in the path. As such
-# we use the mingw lib used at build time and put this at the start of the path
-# before running
-
-MINGW_BIN_DIR = $(shell dirname $(shell :; command -v gcc))
-
-OLD_PATH := $(shell echo "$(PATH)" | sed 's/(/\\(/g' | sed 's/)/\\)/g' | sed 's/ /\\ /g')
-
-LIB_LOAD := PATH=$(MINGW_BIN_DIR):$(OLD_PATH):$(LIB_DIR)
-NEW_PYTHONPATH := $(shell echo "$(PYTHONPATH)" | sed -e 's/\\/\//g' -e 's/\([a-zA-Z]\):\//\/\1\//g' -e 's/;/:/g')
-else
-NEW_PYTHONPATH := $(PYTHONPATH)
-endif
-
-INT_LIBS := $(COCOTB_VPI_LIB) $(COCOTB_FLI_LIB)
-
 ifneq ($(ARCH),i686)
-CMD += -64
+    CMD += -64
 endif
 
-# Depending on the version of modelsim the interfaces that it supports can change
-# Append or remove values to INT_LIBS depending on your license
-$(COCOTB_RESULTS_FILE): $(SIM_BUILD)/runsim.do $(COCOTB_LIBS) $(INT_LIBS)
+$(COCOTB_RESULTS_FILE): $(SIM_BUILD)/runsim.do $(CUSTOM_COMPILE_DEPS)
 	-@rm -f $(COCOTB_RESULTS_FILE)
 
-	set -o pipefail; $(LIB_LOAD) MODULE=$(MODULE) TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) COCOTB_SIM=1 \
-	GPI_EXTRA=$(GPI_EXTRA) TOPLEVEL_LANG=$(TOPLEVEL_LANG) PYTHONPATH=$(LIB_DIR):$(PWD):$(NEW_PYTHONPATH) \
+	set -o pipefail; PYTHONPATH=$(PYTHONPATH) MODULE=$(MODULE) TESTCASE=$(TESTCASE) TOPLEVEL=$(TOPLEVEL) \
+	COCOTB_SIM=1 GPI_EXTRA=$(GPI_EXTRA) TOPLEVEL_LANG=$(TOPLEVEL_LANG)  \
 	$(CMD) $(RUN_ARGS) -do $(SIM_BUILD)/runsim.do 2>&1 | tee $(SIM_BUILD)/sim.log
 
 	# check that the file was actually created, since we can't set an exit code from cocotb
 	test -f $(COCOTB_RESULTS_FILE)
-
-# Potential fix for buffered stdout, YMMV
-# STDOUT=$(SIM_BUILD)/sim.log stdbuf --output=0 $(CMD) -do runsim.do 2>&1 && stdbuf --output=0 --input=0 tail -f sim.log && exit $${PIPESTATUS[0]}
 
 clean::
 	-rm -rf $(SIM_BUILD)

@@ -90,8 +90,8 @@ endef
 
 # this cannot be a regular target because of the way Makefile.$(SIM) is included
 ifeq ($(MAKECMDGOALS),help)
-$(info $(helpmsg))
-# is there a cleaner way to exit here?
+   $(info $(helpmsg))
+   # is there a cleaner way to exit here?
 $(error "Stopping after printing help")
 endif
 

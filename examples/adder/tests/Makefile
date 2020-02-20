@@ -38,7 +38,6 @@ WPWD=$(shell pwd)
 endif
 
 PYTHONPATH := $(PWD)/../model
-export PYTHONPATH
 
 ifeq ($(TOPLEVEL_LANG),verilog)
     VERILOG_SOURCES = $(WPWD)/../hdl/adder.v

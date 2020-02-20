@@ -31,17 +31,17 @@
 
 # Directory containing the cocotb Python module
 ifeq ($(COCOTB_PY_DIR),)
-export COCOTB_PY_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
+   export COCOTB_PY_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/../../..)
 endif
 
 # Directory containing all support files required to build cocotb-based
 # simulations: Makefile fragments, and the simulator libraries.
 ifeq ($(COCOTB_SHARE_DIR),)
-export COCOTB_SHARE_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+   export COCOTB_SHARE_DIR:=$(realpath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 endif
 
 ifeq ($(COCOTB_PY_DIR),$(COCOTB_SHARE_DIR))
-$(warning 'Deprecated cocotb file structure detected. Please use "include $$(shell cocotb-config --makefile)/Makefile.inc" in Makefiles')
+   $(warning 'Deprecated cocotb file structure detected. Please use "include $$(shell cocotb-config --makefile)/Makefile.inc" in Makefiles')
 endif
 
 ifeq ($(USER_DIR),)
@@ -56,9 +56,9 @@ export ARCH
 
 OS=$(shell uname)
 ifneq (, $(findstring MINGW, $(OS)))
-OS=Msys
+   OS=Msys
 else ifneq (, $(findstring MSYS, $(OS)))
-OS=Msys
+   OS=Msys
 endif
 export OS
 
@@ -71,18 +71,23 @@ SIM_DEFINE := $(shell echo $(SIM) | tr a-z A-Z)
 
 # Use a common define for Questa and Modelsim and cvc
 ifeq ($(SIM_DEFINE),$(filter $(SIM_DEFINE),QUESTA CVC))
-SIM_DEFINE = MODELSIM
+    SIM_DEFINE = MODELSIM
 endif
 
 # Use a common define for Xcelium and IUS
 ifeq ($(SIM_DEFINE),XCELIUM)
-SIM_DEFINE = IUS
+    SIM_DEFINE = IUS
 endif
 
-export LIB_DIR=$(COCOTB_PY_DIR)/cocotb/libs
+LIB_DIR:=$(COCOTB_PY_DIR)/cocotb/libs
+# On Windows required as c:/.. for some simulators
+ifeq ($(OS),Msys)
+    LIB_DIR:=$(shell cygpath -m $(LIB_DIR))
+endif
+export LIB_DIR
 
 ifeq ($(OS),Msys)
-LIB_EXT    := dll
+    LIB_EXT    := dll
 else
-LIB_EXT    := so
+    LIB_EXT    := so
 endif
