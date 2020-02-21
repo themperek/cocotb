@@ -63,7 +63,6 @@ ifeq ($(OS),Linux)
     LD_LIBRARY_PATH := $(PWD)/../cosim:$(LD_LIBRARY_PATH)
 endif
 
-include $(shell cocotb-config --makefiles)/Makefile.inc
 include $(shell cocotb-config --makefiles)/Makefile.sim
 
 ifeq ($(OS),Linux)

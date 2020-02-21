@@ -90,20 +90,65 @@ endef
 
 # this cannot be a regular target because of the way Makefile.$(SIM) is included
 ifeq ($(MAKECMDGOALS),help)
-$(info $(helpmsg))
-# is there a cleaner way to exit here?
-$(error "Stopping after printing help")
+    $(info $(helpmsg))
+    # is there a cleaner way to exit here?
+    $(error "Stopping after printing help")
+endif
+
+# make sure cocotb is installed
+COCOTB_CONFIG_CMD := $(shell :; command -v cocotb-config)
+ifeq ($(COCOTB_CONFIG_CMD),)
+    $(error "Cocotb not installed (cocotb-config not found). Please install cocotb (see documentation for details).")
+endif
+
+# Directory containing the cocotb Python module
+COCOTB_PY_DIR := $(realpath $(shell cocotb-config --prefix))
+
+# Directory containing all support files required to build cocotb-based
+# simulations: Makefile fragments, and the simulator libraries.
+COCOTB_SHARE_DIR := $(realpath $(shell cocotb-config --share))
+
+ARCH ?= $(shell uname -m)
+
+OS=$(shell uname)
+ifneq (, $(findstring MINGW, $(OS)))
+    OS = Msys
+else ifneq (, $(findstring MSYS, $(OS)))
+    OS = Msys
+endif
+
+ifeq ($(OS),Msys)
+    LIB_EXT := dll
+else
+    LIB_EXT := so
+endif
+
+# Default to Icarus if no simulator is defined
+SIM ?= icarus
+SIM_DEFINE := $(shell echo $(SIM) | tr a-z A-Z)
+
+# Maintain backwards compatibility by supporting upper and lower case SIM variable
+SIM_LOWERCASE := $(shell echo $(SIM) | tr A-Z a-z)
+
+LIB_DIR := $(COCOTB_PY_DIR)/cocotb/libs/$(SIM_LOWERCASE)
+
+include $(COCOTB_SHARE_DIR)/makefiles/Makefile.pylib
+
+# Use a common define for Questa and Modelsim and cvc
+ifeq ($(SIM_DEFINE),$(filter $(SIM_DEFINE),QUESTA CVC))
+    SIM_DEFINE = MODELSIM
+endif
+
+# Use a common define for Xcelium and IUS
+ifeq ($(SIM_DEFINE),XCELIUM)
+    SIM_DEFINE = IUS
 endif
 
 SIM_BUILD ?= sim_build
-export SIM_BUILD
 
 COCOTB_RESULTS_FILE ?= results.xml
 COCOTB_HDL_TIMEUNIT ?= 1ns
 COCOTB_HDL_TIMEPRECISION ?= 1ps
-
-# Maintain backwards compatibility by supporting upper and lower case SIM variable
-SIM_LOWERCASE := $(shell echo $(SIM) | tr A-Z a-z)
 
 HAVE_SIMULATOR = $(shell if [ -f $(COCOTB_SHARE_DIR)/makefiles/simulators/Makefile.$(SIM_LOWERCASE) ]; then echo 1; else echo 0; fi;)
 AVAILABLE_SIMULATORS = $(patsubst .%,%,$(suffix $(wildcard $(COCOTB_SHARE_DIR)/makefiles/simulators/Makefile.*)))
@@ -118,14 +163,7 @@ CUSTOM_SIM_DEPS += $(shell find $(COCOTB_PY_DIR)/cocotb/ -name "*.py")
 
 PWD := $(shell pwd)
 
-#include $(COCOTB_SHARE_DIR)/lib/Makefile
 include $(COCOTB_SHARE_DIR)/makefiles/simulators/Makefile.$(SIM_LOWERCASE)
-
-# Append directory containing the cocotb Python package to PYTHONPATH
-# XXX: This is only needed if cocotb is not installed into the default
-# Python search path.
-PYTHONPATH := $(COCOTB_PY_DIR):$(PYTHONPATH)
-export PYTHONPATH
 
 $(SIM_BUILD):
 	mkdir -p $@

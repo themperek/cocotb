@@ -31,7 +31,4 @@
 # which copy the pattern of the endian_swapper HAL example. In future these modules
 # should use `setuptools` to build their HAL interface
 
-NATIVE_ARCH=$(shell uname -m)
-ARCH?=$(NATIVE_ARCH)
-
 include $(COCOTB_SHARE_DIR)/makefiles/Makefile.pylib.$(OS)

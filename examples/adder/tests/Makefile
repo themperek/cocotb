@@ -32,12 +32,12 @@ TOPLEVEL_LANG ?= verilog
 PWD=$(shell pwd)
 
 ifeq ($(OS),Msys)
-WPWD=$(shell sh -c 'pwd -W')
+    WPWD=$(shell sh -c 'pwd -W')
+    PYTHONPATH := $(PWD)/../model;$(PYTHONPATH)
 else
-WPWD=$(shell pwd)
+    WPWD=$(shell pwd)
+    PYTHONPATH := $(PWD)/../model:$(PYTHONPATH)
 endif
-
-PYTHONPATH := $(PWD)/../model:$(PYTHONPATH)
 
 ifeq ($(TOPLEVEL_LANG),verilog)
     VERILOG_SOURCES = $(WPWD)/../hdl/adder.v
@@ -50,5 +50,4 @@ endif
 TOPLEVEL := adder
 MODULE   := test_adder
 
-include $(shell cocotb-config --makefiles)/Makefile.inc
 include $(shell cocotb-config --makefiles)/Makefile.sim
