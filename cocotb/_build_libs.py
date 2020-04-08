@@ -137,19 +137,14 @@ class build_ext(_build_ext):
                 )
 
 
-def _extra_link_args(lib_name=None, rpath=None):
+def _extra_link_args(lib_name=None, rpath="$ORIGIN"):
     """
     Add linker argument to load dependencies from the directory where vpi/vhpi/fli library is located
     On osx use`install_name`
     On Linux use`rpath`
     """
 
-    args = []
-    if sys.platform == "darwin" and lib_name is not None:
-        args += ["-Wl,-install_name,@rpath/%s.so" % lib_name]
-    if rpath is not None:
-        args += ["-Wl,-rpath,%s" % rpath]
-    return args
+    return ["-Wl,-rpath,%s" % rpath]
 
 
 def _get_python_lib_link():
