@@ -137,14 +137,13 @@ class build_ext(_build_ext):
                 )
 
 
-def _extra_link_args(lib_name=None, rpath="$ORIGIN"):
+def _extra_link_args(rpath="$ORIGIN"):
     """
-    Add linker argument to load dependencies from the directory where vpi/vhpi/fli library is located
-    On osx use`install_name`
-    On Linux use`rpath`
+    Use`rpath` to add linker argument to load dependencies from the directory where vpi/vhpi/fli library is located
     """
 
-    return ["-Wl,-rpath,%s" % rpath]
+    if os.name == "posix":
+        return ["-Wl,-rpath,%s" % rpath]
 
 
 def _get_python_lib_link():
@@ -199,7 +198,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir):
         os.path.join("cocotb", "libs", "libcocotbutils"),
         include_dirs=[include_dir],
         sources=[os.path.join(share_lib_dir, "utils", "cocotb_utils.cpp")],
-        extra_link_args=_extra_link_args(lib_name="libcocotbutils", rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -216,7 +215,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir):
         libraries=["cocotbutils"],
         library_dirs=python_lib_dirs,
         sources=[os.path.join(share_lib_dir, "gpi_log", "gpi_logging.cpp")],
-        extra_link_args=_extra_link_args(lib_name="libgpilog", rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -230,7 +229,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir):
         libraries=[_get_python_lib_link(), "gpilog", "cocotbutils"],
         library_dirs=python_lib_dirs,
         sources=[os.path.join(share_lib_dir, "embed", "gpi_embed.cpp")],
-        extra_link_args=_extra_link_args(lib_name="libcocotb", rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -246,7 +245,7 @@ def _get_common_lib_ext(include_dir, share_lib_dir):
             os.path.join(share_lib_dir, "gpi", "GpiCbHdl.cpp"),
             os.path.join(share_lib_dir, "gpi", "GpiCommon.cpp"),
         ],
-        extra_link_args=_extra_link_args(lib_name="libgpi", rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -279,7 +278,7 @@ def _get_vpi_lib_ext(
             os.path.join(share_lib_dir, "vpi", "VpiImpl.cpp"),
             os.path.join(share_lib_dir, "vpi", "VpiCbHdl.cpp"),
         ],
-        extra_link_args=_extra_link_args(rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -299,7 +298,7 @@ def _get_vhpi_lib_ext(
             os.path.join(share_lib_dir, "vhpi", "VhpiImpl.cpp"),
             os.path.join(share_lib_dir, "vhpi", "VhpiCbHdl.cpp"),
         ],
-        extra_link_args=_extra_link_args(rpath="$ORIGIN"),
+        extra_link_args=_extra_link_args(),
         extra_compile_args=_extra_cxx_compile_args,
     )
 
@@ -381,7 +380,7 @@ def get_ext():
                     os.path.join(share_lib_dir, "fli", "FliCbHdl.cpp"),
                     os.path.join(share_lib_dir, "fli", "FliObjHdl.cpp"),
                 ],
-                extra_link_args=_extra_link_args(rpath="$ORIGIN"),
+                extra_link_args=_extra_link_args(),
                 extra_compile_args=_extra_cxx_compile_args,
             )
 
