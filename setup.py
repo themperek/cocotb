@@ -53,6 +53,10 @@ from setuptools import find_packages
 from os import path, walk
 from io import StringIO
 
+# sys.path normally includes "" (the current directory), but does not appear to be the case on msys2 during install.
+# Add it back because users expect to be able to import files in their test directory.
+sys.path.insert(0, "")
+
 # note: cocotb is not installed properly yet, but we can import it anyway
 # because it's in the current directory. We'll need to change this if we
 # add `install_requires` to the `setup()` call.
