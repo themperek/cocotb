@@ -110,6 +110,8 @@ class Simulator(abc.ABC):
     ) -> None:
         """Build the HDL sources."""
 
+        __tracebackhide__ = True  # Hide the traceback when using pytest
+
         self.build_dir = os.path.abspath(build_dir)
         os.makedirs(self.build_dir, exist_ok=True)
 
@@ -249,11 +251,7 @@ class Simulator(abc.ABC):
 
         for cmd in cmds:
             print(
-                "INFO: Running command: "
-                + ' "'.join(cmd)
-                + '" in directory:"'
-                + str(cwd)
-                + '"'
+                f"INFO: Running command: {' '.join(cmd)!r} in directory: {str(cwd)!r}"
             )
 
             # TODO: create a thread to handle stderr and log as error?
@@ -347,6 +345,9 @@ class Icarus(Simulator):
         return ["-D" + define for define in defines]
 
     def get_parameter_options(self, parameters: Mapping[str, object]) -> List[str]:
+        if not parameters:
+            return []
+
         assert self.hdl_toplevel is not None
         return [
             f"-P{self.hdl_toplevel}.{name}={value}"
@@ -581,9 +582,9 @@ class Ghdl(Simulator):
 
         cmd = [
             ["ghdl", "-r"]
+            + self.sim_args
             + [self.sim_toplevel]
             + ["--vpi=" + cocotb.config.lib_name_path("vpi", "ghdl")]
-            + self.sim_args
             + self.get_parameter_options(self.parameters)
         ]
 
