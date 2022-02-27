@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1645967162085,
+  "lastUpdate": 1645967446228,
   "repoUrl": "https://github.com/themperek/cocotb",
   "entries": {
     "Benchmark": [
@@ -62,6 +62,37 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 0.15676902578341756",
             "extra": "mean: 18.765401713000006 sec\nrounds: 5"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "hemperek@physik.uni-bonn.de",
+            "name": "Tomasz Hemperek",
+            "username": "themperek"
+          },
+          "committer": {
+            "email": "hemperek@physik.uni-bonn.de",
+            "name": "Tomasz Hemperek",
+            "username": "themperek"
+          },
+          "distinct": true,
+          "id": "7c4559c8f4105bdfa43597a599aaf5617df1a24a",
+          "message": "benchmark  tests",
+          "timestamp": "2022-02-27T14:08:11+01:00",
+          "tree_id": "d3ad72938225390634dbc8d76fc109e9ed2745b7",
+          "url": "https://github.com/themperek/cocotb/commit/7c4559c8f4105bdfa43597a599aaf5617df1a24a"
+        },
+        "date": 1645967445791,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "::test_matrix_multiplier_icarus",
+            "value": 0.10574862928758366,
+            "unit": "iter/sec",
+            "range": "stddev: 0.047303127656929934",
+            "extra": "mean: 9.456387347400007 sec\nrounds: 5"
           }
         ]
       }
