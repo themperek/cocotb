@@ -18,18 +18,10 @@ if sys.version_info[:3] < (3, 6, 2):  # noqa: UP036 | bug in ruff
 
     raise SystemExit("\n".join(msg))
 
-import logging
 import subprocess
-from io import StringIO
 from os import path, walk
 
 from setuptools import find_packages, setup
-
-# Note: cocotb is not installed properly yet and is missing dependencies and binaries
-# We can still import other files next to setup.py, as long as they're in MANIFEST.in
-# The below line is necessary for PEP517 support
-sys.path.append(path.dirname(__file__))
-from cocotb_build_libs import build_ext, get_ext
 
 
 def read_file(fname):
@@ -66,17 +58,8 @@ with open(version_file_path, "w") as f:
     f.write(f'__version__ = "{__version__}"\n')
 
 
-# store log from build_libs and display at the end in verbose mode
-# see https://github.com/pypa/pip/issues/6634
-log_stream = StringIO()
-handler = logging.StreamHandler(log_stream)
-log = logging.getLogger("cocotb._build_libs")
-log.setLevel(logging.INFO)
-log.addHandler(handler)
-
 setup(
     name="cocotb",
-    cmdclass={"build_ext": build_ext},
     version=__version__,
     description="cocotb is a coroutine based cosimulation library for writing VHDL and Verilog testbenches in Python.",
     url="https://www.cocotb.org",
@@ -100,7 +83,6 @@ setup(
         ),
         "cocotb_tools": (package_files("src/cocotb_tools/makefiles")),
     },
-    ext_modules=get_ext(),
     entry_points={
         "console_scripts": [
             "cocotb-config=cocotb_tools.config:main",
@@ -127,5 +109,3 @@ setup(
         "Documentation": "https://docs.cocotb.org",
     },
 )
-
-print(log_stream.getvalue())
