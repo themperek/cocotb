@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.18)
 
 # Prevent CMake from picking up GCC-style env flags when targeting MSVC
 if(WIN32)
@@ -23,7 +23,9 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
+# Request Development.Module, not Development. The latter also requires
+# Development.Embed / libpython, which manylinux images intentionally omit.
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 
 if(WIN32)
     set(PYTHON_EXT_SUFFIX ".${Python_SOABI}.pyd")
@@ -265,9 +267,12 @@ add_cocotb_library(simulator
         ${SHARE_LIB_DIR}/pygpi/embed.cpp
         ${SHARE_LIB_DIR}/pygpi/logging.cpp
     DEFINES PYGPI_EXPORTS
-    LIBRARIES gpi ${Python_LIBRARIES}
+    LIBRARIES gpi
     RC_LIBRARIES ""
 )
+# Python::Module links the import library on Windows and leaves Python
+# symbols unresolved on Unix (libpython is preloaded at runtime).
+target_link_libraries(simulator PRIVATE Python::Module)
 
 if(SKBUILD_STATE STREQUAL "editable")
     set_target_properties(simulator PROPERTIES
@@ -285,10 +290,6 @@ set_target_properties(simulator PROPERTIES
     PREFIX ""
     SUFFIX ${PYTHON_EXT_SUFFIX}
 )
-
-if(WIN32)
-    target_link_directories(simulator PRIVATE ${Python_LIBRARY_DIRS})
-endif()
 
 function(add_vpi_library SIM_NAME SIM_DEFINE)
     set(options "")
